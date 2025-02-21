@@ -5,9 +5,9 @@ const Button = () => {
 
   const handleClick = async () => {
     try {
-      const res = await fetch("http://localhost:5000/test");
-      const data = await res.json();
-      setResponseMessage(data.message);
+      const res = await fetch("http://localhost:8080/ping");
+      const data = await res.text();
+      setResponseMessage(data);
     } catch (error) {
       console.error("Error fetching data");
       setResponseMessage("Error conecting backend");
