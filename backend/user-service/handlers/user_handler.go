@@ -2,8 +2,8 @@ package handlers
 
 import (
     "github.com/gofiber/fiber/v2"
-    "github.com/gababool/proman/backend/user-service/config"
-    "github.com/gababool/proman/backend/user-service/models"
+    "github.com/erloma/manaflo/backend/user-service/config"
+    "github.com/erloma/manaflo/backend/user-service/models"
 )
 
 func PingHandler(c *fiber.Ctx) error {

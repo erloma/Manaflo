@@ -1,4 +1,4 @@
-module github.com/erloma/manaflo/backend/user-service
+module github.com/erloma/manaflo/backend/task-service
 
 go 1.24.0
 

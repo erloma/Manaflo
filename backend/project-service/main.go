@@ -4,9 +4,9 @@ import (
     "log"
 	"fmt"
     "github.com/gofiber/fiber/v2"
-    "github.com/erloma/manaflo/backend/user-service/config"
-    "github.com/erloma/manaflo/backend/user-service/models"
-    "github.com/erloma/manaflo/backend/user-service/routes"
+    "github.com/erloma/manaflo/backend/project-service/config"
+    "github.com/erloma/manaflo/backend/project-service/models"
+    "github.com/erloma/manaflo/backend/project-service/routes"
 	"github.com/joho/godotenv"
     "github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -33,12 +33,12 @@ func main() {
     }
 
     // Auto migrate the schema
-    db.AutoMigrate(&models.User{})
+    db.AutoMigrate(&models.Project{})
 
     // Setup routes
     routes.SetupRoutes(app)
 
-	port := ":8080"
+	port := ":8082"
 
     // Start server
     log.Fatal(app.Listen(port))
