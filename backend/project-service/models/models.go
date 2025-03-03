@@ -14,6 +14,18 @@ type Project struct {
     Attachments []Attachment `json:"attachments"`
 }
 
+// Makes sure that attachments and description fields are included,
+// even if omitted upon creation call
+func (p *Project) BeforeCreate(tx *gorm.DB) (err error) {
+	if p.Description == "" {
+		p.Description = ""
+	}
+	if p.Attachments == nil {
+		p.Attachments = []Attachment{}
+	}
+	return
+}
+
 type Role struct {
     gorm.Model
     Project     Project   `gorm:"not null"           json:"project"`           
