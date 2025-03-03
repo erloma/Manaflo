@@ -27,7 +27,7 @@ func main() {
 	}))
 
     // Connect to database
-    db, err := config.ConnectDB()
+    db, err := config.GetDB()
     if err != nil {
         log.Fatal("Failed to connect to database: ", err)
     }

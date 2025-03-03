@@ -11,7 +11,7 @@ func PingHandler(c *fiber.Ctx) error {
 }
 
 func GetUsers(c *fiber.Ctx) error {
-    db, err := config.ConnectDB()
+    db, err := config.GetDB()
     if err != nil {
         return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
     }
@@ -24,7 +24,7 @@ func GetUsers(c *fiber.Ctx) error {
 }
 
 func CreateUser(c *fiber.Ctx) error {
-    db, err := config.ConnectDB()
+    db, err := config.GetDB()
     if err != nil {
         return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
     }

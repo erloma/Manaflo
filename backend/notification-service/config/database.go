@@ -7,7 +7,15 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDB() (*gorm.DB, error) {
+var DB *gorm.DB
+
+func GetDB() (*gorm.DB, error) {
+
+	if (DB != nil){
+		return DB, nil;
+	}
+
+
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
@@ -20,10 +28,11 @@ func ConnectDB() (*gorm.DB, error) {
 		host, user, password, dbname, port, sslmode)
 
 	// Connect to the database
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	var err error
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
 
-	return db, nil
+	return DB, nil
 }
