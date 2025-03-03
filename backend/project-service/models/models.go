@@ -8,18 +8,13 @@ import (
 
 type Project struct {
     gorm.Model
-    Name        string       `gorm:"not null;size:255" json:"name"`
-    Description string       `gorm:"type:text"         json:"description"`
-    CreatedBy   int          `gorm:"not null"          json:"created_by"`
+    Name        string       `gorm:"not null;size:255"      json:"name"`
+    Description string       `gorm:"type:text;default:''"   json:"description"`
+    CreatedBy   int          `gorm:"not null"               json:"created_by"`
     Attachments []Attachment `json:"attachments"`
 }
 
-// Makes sure that attachments and description fields are included,
-// even if omitted upon creation call
 func (p *Project) BeforeCreate(tx *gorm.DB) (err error) {
-	if p.Description == "" {
-		p.Description = ""
-	}
 	if p.Attachments == nil {
 		p.Attachments = []Attachment{}
 	}
@@ -41,6 +36,7 @@ type ProjectMember struct {
 }
 
 type ProjectMilestone struct {
+    gorm.Model
     ProjectID   Project   `json:"project"`
     Name        string    `json:"name"` 
     Description string    `json:"description"`
@@ -54,7 +50,7 @@ type Attachment struct {
     FileName   string    `json:"file_name"`
     FileType   string    `json:"file_type"`
     UploadedBy uint      `json:"uploaded_by"` 
-    ProjectID    uint    `json:"project_id"`
+    ProjectID  uint      `json:"project_id"`
 }
 
 // Permissions for differing roles?
