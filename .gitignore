@@ -1,2 +1,4 @@
 .DS_Store
-backend/user-service/.env
+*.env
+
+
