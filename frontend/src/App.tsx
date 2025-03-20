@@ -1,11 +1,22 @@
-import Button from "./components/Button"; // Import the Button component
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 function App() {
   return (
-    <div>
-      <h1 className="text-red-500">Project Manager</h1>
-
-      <Button /> {/* Render the Button component */}
+    <div className="p-6">
+      <h1 className="text-red-500 text-xl font-bold mb-4">Project Manager</h1>
+      <Accordion className="border-2 rounded-2xl"type="single" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger>Is it accessible?</AccordionTrigger>
+          <AccordionContent>
+            Yes. It adheres to the WAI-ARIA design pattern.
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }
