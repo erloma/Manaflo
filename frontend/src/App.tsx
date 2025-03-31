@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { AccountSettings } from "./components/ui/accountSettings";
+import { AccountSettings } from "./components/accountSettings";
 
 function App() {
   return (
