@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { AccountSettings } from "./components/ui/accountSettings";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+      <AccountSettings></AccountSettings>
     </div>
   );
 }
