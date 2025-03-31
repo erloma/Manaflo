@@ -1,22 +1,9 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import CreateTaskForm from "./components/CreateTaskForm";
 
 function App() {
   return (
-    <div className="p-6">
-      <h1 className="text-red-500 text-xl font-bold mb-4">Project Manager</h1>
-      <Accordion className="border-2 rounded-2xl"type="single" collapsible>
-        <AccordionItem value="item-1">
-          <AccordionTrigger>Is it accessible?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It adheres to the WAI-ARIA design pattern.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      < CreateTaskForm></CreateTaskForm>
     </div>
   );
 }
