@@ -1,6 +1,7 @@
 import {Button} from "./ui/button.tsx"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import React, { useState } from "react";
 
 import {
     Card,
@@ -12,14 +13,18 @@ import {
   } from "@/components/ui/card"
 
 function AccountSettings (){
-    var editName = true;
+    const [editFirstName, setEditFirstName] = useState(false);
+    const [editLastName, setEditLastName] = useState(false);
+    const [editEmail, setEditEmail] = useState(false);
 
-    function nameEdit() {
-        if (editName) {
-            return <Input id="name" placeholder="First Name" />
-        } else {
-            return <p>Sperma Doneraren</p>
-        }
+    function switchFirstName() {
+        setEditFirstName(!editFirstName);
+    }
+    function switchLastName() {
+        setEditLastName(!editLastName);
+    }
+    function switchEmail() {
+        setEditEmail(!editEmail);
     }
 
     return (
@@ -34,14 +39,27 @@ function AccountSettings (){
                 <div className="grid w-full items-center gap-4">
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="name">First Name:</Label>
-                        {nameEdit()}
+                        <div className="flex items-center space-x-2 space-y-1.5">
+                                {editFirstName ? <Input className="float-left" id="name" placeholder="First Name"/> : <p>Sperma</p>}
+                                <Button type="button" onClick={switchFirstName} className="float-right">{editFirstName ? "Save Name" : "Edit"}</Button>
+                            </div>
                     </div>
                     <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Last Name:</Label>
-                        {nameEdit()}
+                        <Label htmlFor="name">Last Name:</Label>
+                            <div className="flex items-center space-x-2 space-y-1.5">
+                                {editLastName ? <Input className="float-left" id="name" placeholder="Last Name"/> : <p>Donatorn</p>}
+                                <Button type="button" onClick={switchLastName} className="float-right">{editLastName ? "Save Name" : "Edit"}</Button>   
+                            </div> 
+                    </div> 
+                    <div className="flex flex-col space-y-1.5">
+                        <Label htmlFor="name">Email: </Label>
+                            <div className="flex items-center space-x-2 space-y-1.5">
+                                {editEmail ? <Input id="email" placeholder="First Name"/> : <p>example@post.se</p>}
+                                <Button type="button" onClick={switchEmail} className="float-right">{editEmail ? "Save E-mail" : "Edit"}</Button>
+                            </div>
                     </div>
                 </div>
-                </form>
+            </form>
             </CardContent>
 
             <CardFooter>
