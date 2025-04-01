@@ -98,7 +98,9 @@ function AccountSettings (){
                 </div>
             </form>
             </CardContent>
-            <CardFooter></CardFooter>
+            <CardFooter>
+                <p>Add error messages and stuff like that here later</p>
+            </CardFooter>
         </Card>
         </div> 
     )
