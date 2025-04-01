@@ -1,7 +1,7 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import FirstPage from "./pages/FirstPage"
+import { AccountSettings } from "./components/accountSettings";
 
 function App() {
   return (
@@ -11,6 +11,7 @@ function App() {
       </Route>
       <Route path="first" element={<FirstPage />} />
     </Routes>
+    <AccountSettings></AccountSettings>
   </BrowserRouter>
   );
 }
