@@ -56,39 +56,40 @@ function AccountSettings (){
     }    
 
     return (
-        <div>
+        <div className="w-xl">
         <Card>
             <CardHeader>
                 <CardTitle>Account Settings</CardTitle>
                 <CardDescription>Verify or update account settings</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="mx-5">
             <form>
                 <div className="grid w-full items-center gap-4">
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="name">First Name:</Label>
                         <div className="flex items-center space-x-2 space-y-1.5">
-                                {editFirstName ? <Input className="float-left" id="name" placeholder="First Name"/> : <p>Sperma</p>}
-                                <Button type="button" onClick={switchFirstName} className="float-right">{editFirstName ? "Save Name" : "Edit"}</Button>
-                            </div>
+                            {editFirstName ? <Input id="email" placeholder="New first name"/> : <p>Sperma</p>}
+                            {editFirstName ? <Button type="button" onClick={switchFirstName} className="float-right">Save</Button> : <img className="size-5.5"src="/images/editIcon.png" alt="edit icon" onClick={switchFirstName}/>}
+                        </div>
                     </div>
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="name">Last Name:</Label>
                             <div className="flex items-center space-x-2 space-y-1.5">
-                                {editLastName ? <Input className="float-left" id="name" placeholder="Last Name"/> : <p>Donatorn</p>}
-                                <Button type="button" onClick={switchLastName} className="float-right">{editLastName ? "Save Name" : "Edit"}</Button>   
+                            {editLastName ? <Input id="email" placeholder="New last name"/> : <p>Donatorn</p>}
+                            {editLastName ? <Button type="button" onClick={switchLastName} className="float-right">Save</Button> : <img className="size-5.5"src="/images/editIcon.png" alt="edit icon" onClick={switchLastName}/>}
                             </div> 
                     </div> 
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="name">Email: </Label>
                             <div className="flex items-center space-x-2 space-y-1.5">
-                                {editEmail ? <Input id="email" placeholder="First Name"/> : <p>example@post.se</p>}
-                                <Button type="button" onClick={switchEmail} className="float-right">{editEmail ? "Save E-mail" : "Edit"}</Button>
+                                {editEmail ? <Input id="email" placeholder="New e-mail"/> : <p>example@post.se</p>}
+                                {editEmail ? <Button type="button" onClick={switchEmail} className="float-right">Save</Button> : <img className="size-5.5"src="/images/editIcon.png" alt="edit icon" onClick={switchEmail}/>}
                             </div>
                     </div>
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="name">Password: </Label>
                         <div className="flex items-center space-x-2 space-y-1.5">
+                            
                             {editPassword ? <Button type="button" onClick={switchPassword} className="float-right">{"Update Password"}</Button> : updatePassword()}
 
                             
@@ -97,9 +98,7 @@ function AccountSettings (){
                 </div>
             </form>
             </CardContent>
-            <CardFooter>
-                <p>Card Footer</p>
-            </CardFooter>
+            <CardFooter></CardFooter>
         </Card>
         </div> 
     )
