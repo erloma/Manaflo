@@ -1,23 +1,17 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import FirstPage from "./pages/FirstPage"
 
 function App() {
   return (
-    <div className="p-6">
-      <h1 className="text-red-500 text-xl font-bold mb-4">Project Manager</h1>
-      <Accordion className="border-2 rounded-2xl"type="single" collapsible>
-        <AccordionItem value="item-1">
-          <AccordionTrigger>Is it accessible?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It adheres to the WAI-ARIA design pattern.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<HomePage />}>
+      </Route>
+      <Route path="first" element={<FirstPage />} />
+    </Routes>
+  </BrowserRouter>
   );
 }
 
