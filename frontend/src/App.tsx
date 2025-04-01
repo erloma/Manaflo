@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import FirstPage from "./pages/FirstPage"
+import LoginPage from "./pages/LoginPage.tsx";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Route path="/" element={<HomePage />}>
       </Route>
       <Route path="first" element={<FirstPage />} />
+      <Route path="login" element={<LoginPage />} />
     </Routes>
   </BrowserRouter>
   );
