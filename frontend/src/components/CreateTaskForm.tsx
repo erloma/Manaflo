@@ -60,6 +60,15 @@ export function CreateTaskForm() {
                   <SelectItem value="high">High</SelectItem>
                 </SelectContent>
               </Select>
+              <Label htmlFor="assignee">Assignee</Label>
+              <Select>
+                <SelectTrigger id="assignee">
+                  <SelectValue placeholder="Unassigned" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {/* TODO: dynamically load project members */}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </form>
