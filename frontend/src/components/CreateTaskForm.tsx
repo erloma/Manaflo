@@ -1,4 +1,5 @@
 import * as React from "react"
+import { DatePicker } from "./DatePicker"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -39,12 +40,8 @@ export function CreateTaskForm() {
                 <Input className="h-full" id="desc" placeholder="Description of the task" />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="name">Title</Label>
-                <Input id="name" placeholder="Title of the task" />
-                <Label htmlFor="name">Title</Label>
-                <Input id="name" placeholder="Title of the task" />
-                <Label htmlFor="name">Title</Label>
-                <Input id="name" placeholder="Title of the task" />
+                <Label htmlFor="name">Due date</Label>
+                <DatePicker/>
               </div>
             </div>
 
