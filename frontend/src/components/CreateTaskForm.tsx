@@ -22,7 +22,7 @@ import {
 
 export function CreateTaskForm() {
   return (
-    <Card className="w-[700px]">
+    <Card className="w-[800px]">
       <CardHeader className="flex flex-col items-center text-center">
           <CardTitle>Create task</CardTitle>
 
@@ -32,16 +32,19 @@ export function CreateTaskForm() {
       <CardContent>
         <form>
           <div className="grid w-full items-center gap-4">
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-x-8">
               <div className="flex flex-col w-2/3 space-y-1.5">
                 <Label htmlFor="title">Title</Label>
                 <Input id="title" placeholder="Title of the task" />
                 <Label htmlFor="desc">Description</Label>
                 <Input className="h-full" id="desc" placeholder="Description of the task" />
               </div>
-              <div className="flex flex-col space-y-1.5">
+              <div className="flex flex-col space-y-1.5 ml-auto">
                 <Label htmlFor="name">Due date</Label>
-                <DatePicker/>
+                <div className="w-200px">
+                  <DatePicker/>
+                </div>
+                
               </div>
             </div>
 
