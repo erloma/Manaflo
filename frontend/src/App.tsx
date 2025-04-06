@@ -1,10 +1,17 @@
-import CreateTaskForm from "./components/CreateTaskForm";
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import FirstPage from "./pages/FirstPage"
 
 function App() {
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      < CreateTaskForm></CreateTaskForm>
-    </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<HomePage />}>
+      </Route>
+      <Route path="first" element={<FirstPage />} />
+    </Routes>
+  </BrowserRouter>
   );
 }
 
