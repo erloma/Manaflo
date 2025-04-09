@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/erloma/manaflo/backend/task-service/models"
 	"github.com/erloma/manaflo/backend/task-service/services"
 	"github.com/gofiber/fiber/v2"
@@ -11,7 +12,7 @@ type TaskHandler struct {
 }
 
 func NewTaskHandler(taskService *services.TaskService) *TaskHandler {
-    return &TaskHandler{taskService: taskService}
+	return &TaskHandler{taskService: taskService}
 }
 
 func (h *TaskHandler) GetTasks(c *fiber.Ctx) error {
@@ -23,16 +24,14 @@ func (h *TaskHandler) GetTasks(c *fiber.Ctx) error {
 }
 
 func (h *TaskHandler) CreateTask(c *fiber.Ctx) error {
-    var task models.Task
-
-	if err := c.BodyParser(task); err != nil {
+	var task models.Task
+	if err := c.BodyParser(&task); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Unable to parse JSON"})
 	}
+	_, err := h.taskService.CreateTask(task)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
+	}
 
-    _, err := h.taskService.CreateTask(task)
-    if err != nil {
-        return c.Status(400).JSON(fiber.Map{"error": err.Error()})
-    }
-
-    return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Task created successfully"})
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Task created successfully"})
 }

@@ -59,9 +59,7 @@ export function CreateTaskForm() {
       deadline: date.toISOString(),
       priority,
       created_by: createdBy,
-      assigned_users: [],
-      attachments: [],
-      comments: []
+      assigned_to: createdBy
     };
 
     const response = await fetch("http://localhost:8081/api/tasks", {
