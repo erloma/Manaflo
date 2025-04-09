@@ -1,5 +1,4 @@
 import { Calendar } from "@/components/ui/calendar";
-import React from "react";
 
 interface DatePickerProps {
   date: Date;
