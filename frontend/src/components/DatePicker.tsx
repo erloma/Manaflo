@@ -1,21 +1,32 @@
-import { Calendar } from "@/components/ui/calendar"
-import React from "react"
+import { Calendar } from "@/components/ui/calendar";
+import React from "react";
 
- 
-export function DatePicker() {
-  const [date, setDate] = React.useState<Date | undefined>(new Date())
+interface DatePickerProps {
+  date: Date;
+  onDateChange: (date: Date) => void;
+}
+
+export function DatePicker({ date, onDateChange }: DatePickerProps) {
 
   let currentDate = new Date();
-  currentDate.setHours(0,0,0,0);
+  currentDate.setHours(0, 0, 0, 0);
 
- 
+  const handleSelect = (selectedDate: Date | undefined) => {
+    if (selectedDate) {
+      onDateChange(selectedDate);
+    }
+  };
+
+
   return (
     <Calendar
       mode="single"
-      selected={date}
-      onSelect={setDate}
-      disabled={{before: currentDate}}
+      selected={date || undefined} 
+      onSelect={handleSelect}
+      disabled={{ before: currentDate }}
       className="rounded-md border shadow"
     />
-  )
+  );
 }
+
+export default DatePicker;

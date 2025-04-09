@@ -25,6 +25,7 @@ export function CreateTaskForm() {
   const [title, setTitle] = useState("");
   const [description, setDesc] = useState("");
   const [priority, setPriority] = useState("");
+  const [date, setDate] = useState<Date>(new Date);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const processedTitle = event.target.value.trim(); // removes leading/trailing spaces
@@ -38,6 +39,11 @@ export function CreateTaskForm() {
 
   const handlePrioChange = (value: string) => {
     setPriority(value);
+  }
+
+  const handleDateChange = (selectedDate: Date ) => {
+    setDate(selectedDate);
+    console.log(selectedDate);
   }
 
 
@@ -64,7 +70,7 @@ export function CreateTaskForm() {
               <div className="flex flex-col space-y-1.5 ml-auto">
                 <Label htmlFor="name">Due date</Label>
                 <div className="w-200px">
-                  <DatePicker />
+                  <DatePicker date={date} onDateChange={handleDateChange} />
                 </div>
 
               </div>
