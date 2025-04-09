@@ -6,7 +6,10 @@ import (
     "github.com/gofiber/fiber/v2"
     "github.com/erloma/manaflo/backend/task-service/config"
     "github.com/erloma/manaflo/backend/task-service/models"
+    "github.com/erloma/manaflo/backend/task-service/handlers"
     "github.com/erloma/manaflo/backend/task-service/routes"
+    "github.com/erloma/manaflo/backend/task-service/services"
+
 	"github.com/joho/godotenv"
     "github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -35,8 +38,13 @@ func main() {
     // Auto migrate the schema
     db.AutoMigrate(&models.Task{})
 
+    taskService := services.NewTaskService()
+    taskHandler := handlers.NewTaskHandler(taskService)
+
+
     // Setup routes
-    routes.SetupRoutes(app)
+    routes.SetupRoutes(app, taskHandler)
+
 
 	port := ":8081"
 

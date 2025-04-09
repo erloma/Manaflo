@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"github.com/erloma/manaflo/backend/task-service/config"
 	"github.com/erloma/manaflo/backend/task-service/models"
 	"github.com/erloma/manaflo/backend/task-service/services"
 	"github.com/gofiber/fiber/v2"
@@ -11,8 +10,8 @@ type TaskHandler struct {
 	taskService *services.TaskService
 }
 
-func new TaskHandler(taskService *services.TaskService) *TaskHandler {
-    return &TaskHandler{taskServier: taskService}
+func NewTaskHandler(taskService *services.TaskService) *TaskHandler {
+    return &TaskHandler{taskService: taskService}
 }
 
 func (h *TaskHandler) GetTasks(c *fiber.Ctx) error {
