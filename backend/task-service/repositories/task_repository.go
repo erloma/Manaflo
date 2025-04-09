@@ -1,7 +1,6 @@
 package repositories
 
 import (
-		"errors"
 		"github.com/erloma/manaflo/backend/task-service/config"
 		"github.com/erloma/manaflo/backend/task-service/models"
 )
@@ -9,7 +8,7 @@ import (
 func CreateTask(task models.Task) (models.Task, error) {
 	db, err := config.GetDB()
 	if err != nil {
-		return models.User{}, err
+		return models.Task{}, err
 	}
 	result := db.Create(&task)
 	if result.Error != nil {
