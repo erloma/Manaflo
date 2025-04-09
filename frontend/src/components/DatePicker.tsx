@@ -28,4 +28,3 @@ export function DatePicker({ date, onDateChange }: DatePickerProps) {
   );
 }
 
-export default DatePicker;
