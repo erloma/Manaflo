@@ -12,7 +12,7 @@ type TaskHandler struct {
 }
 
 func new TaskHandler(taskService *services.TaskService) *TaskHandler {
-    return &UserHandler(userService: userService)
+    return &TaskHandler{taskServier: taskService}
 }
 
 func (h *TaskHandler) GetTasks(c *fiber.Ctx) error {
@@ -25,36 +25,17 @@ func (h *TaskHandler) GetTasks(c *fiber.Ctx) error {
 
 
 
-func CreateTask(c *fiber.Ctx) error {
-    db, err := config.GetDB();
-    if err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
-    }
-
-    task := new(models.Task)
+func (h *TaskHandler) CreateTask(c *fiber.Ctx) error {
+    var task models.Task
 
     if err := c.BodyParser(task); err != nil {
         return c.Status(500).JSON(fiber.Map{"error": "Unable to parse JSON"})
     }
 
-    if err := db.Create(task).Error; err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Unable create task"})
-    }
-
-    return c.JSON(task)
-}
-
-func GetTasks(c *fiber.Ctx) error {
-    db, err := config.GetDB();
+    _, err := h.taskService.CreateTask(task)
     if err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
+        return c.Status(400).JSON(fiber.Map{"error": err.Error()})
     }
 
-    tasks := new([]models.Task)
-
-    if err := db.Find(tasks).Error; err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Unable to fetch tasks"})
-    }
-
-    return c.JSON(tasks)
+    return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Task created successfully"})
 }
