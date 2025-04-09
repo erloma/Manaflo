@@ -41,11 +41,41 @@ export function CreateTaskForm() {
     setPriority(value);
   }
 
-  const handleDateChange = (selectedDate: Date ) => {
+  const handleDateChange = (selectedDate: Date) => {
     setDate(selectedDate);
     console.log(selectedDate);
   }
 
+  const projectId = 42069;
+  const createdBy = 69420;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const payload = {
+      project: projectId,
+      title,
+      description,
+      deadline: date.toISOString(),
+      priority,
+      created_by: createdBy,
+      assigned_users: [],
+      attachments: [],
+      comments: []
+    };
+
+    const response = await fetch("http://localhost:8081/api/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) throw new Error("Error creating task");
+    return response.json();
+
+
+
+  }
 
 
 
@@ -58,7 +88,7 @@ export function CreateTaskForm() {
         <CardDescription>Create a task for your project</CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="grid w-full items-center gap-4">
             <div className="flex justify-between gap-x-8">
               <div className="flex flex-col w-2/3 space-y-1.5">
@@ -99,12 +129,12 @@ export function CreateTaskForm() {
               </Select>
             </div>
           </div>
+          <CardFooter className="flex justify-between pt-4">
+            <Button variant="outline">Cancel</Button>
+            <Button type="submit">Create task</Button>
+          </CardFooter>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
-        <Button>Create task</Button>
-      </CardFooter>
     </Card>
   )
 }
