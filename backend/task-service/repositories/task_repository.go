@@ -17,7 +17,7 @@ func CreateTask(task models.Task) (models.Task, error) {
 	return task, nil
 }
 // Refactor later to only query tasks in project ID
-func getTasks() ([]models.Task, error) {
+func GetTasks() ([]models.Task, error) {
 	db, err := config.GetDB()
 	if err != nil {
 		return nil, err
