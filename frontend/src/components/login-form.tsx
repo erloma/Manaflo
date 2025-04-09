@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,19 +23,18 @@ export function LoginForm() {
   };
 
 
-  const handleLogin = useCallback(async (event: React.FormEvent) => {
+  const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
-
+  
     try {
       const data = await loginUser(email, password);
-      localStorage.setItem("token", data.token); // Save JWT-token in local storage
+      localStorage.setItem("token", data.token); 
       navigate("/home");
     } catch {
       setError("Invalid email or password. Please try again.");
     }
-  }, [email, password, navigate]);
-
+  };  
 
   return (
     <form className="flex flex-col gap-6" onSubmit={handleLogin}>
