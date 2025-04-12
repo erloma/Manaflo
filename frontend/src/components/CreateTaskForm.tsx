@@ -21,6 +21,20 @@ import {
 } from "@/components/ui/select"
 
 // TODO: pass project id as prop
+// TODO: Give feedback that task has been created successfully/unsuccessfully
+// TODO: Add validation for title/description fields
+// TODO: On submit, re-route to task page (like re-routing to a newly created issue in git for example)
+
+interface Task {
+  project: number,
+  title: string,
+  description: string,
+  deadline: string,
+  priority: string,
+  created_by: number,
+  assigned_to: number
+}
+
 
 export function CreateTaskForm() {
 
@@ -45,7 +59,6 @@ export function CreateTaskForm() {
 
   const handleDateChange = (selectedDate: Date) => {
     setDate(selectedDate);
-    console.log(selectedDate);
   }
 
   const projectId = 42069;
@@ -54,7 +67,7 @@ export function CreateTaskForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = {
+    const payload: Task = {
       project: projectId,
       title,
       description,
