@@ -20,6 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+// TODO: pass project id as prop
+
 export function CreateTaskForm() {
 
   const [title, setTitle] = useState("");
