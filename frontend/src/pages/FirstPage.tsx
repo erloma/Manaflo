@@ -1,7 +1,9 @@
+import CreateTaskForm from "@/components/CreateTaskForm"
+
+
 function FirstPage() {
     return (
-        <h1>First page
-        </h1>
+        <CreateTaskForm/>
     )
 }
 
