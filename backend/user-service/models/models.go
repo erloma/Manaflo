@@ -14,3 +14,10 @@ type LoginRequest struct {
 	Email    string `gorm:"not null;size:100;unique" json:"email"`
 	Password string `gorm:"not null;size:255"        json:"password"`
 }
+
+type userUpdateRequest struct {
+	FirstName *string `json:"firstName,omitempty"` //if not provided omit it. 
+	LastName *string `json:"lastName,omitempty"` 
+	Email *string `json:"email,omitempty"` 
+	Password *string `json:"password,omitempty"` 
+}
