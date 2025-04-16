@@ -28,16 +28,12 @@ function AccountSettings (){
         setEditEmail(!editEmail);
     }
     function switchPassword() {
-        if(editEmail) {
-            //TODO: add submit logic
-        }
-
         setEditPassword(!editPassword);
     }
 
     function updatePassword() {
         return (
-            <div>
+            <div className="m-4">
                 <div className="flex flex-col space-y-3 my-4">
                 <Label htmlFor="name">Old password: </Label>
                 <Input id="Password" placeholder="Old Password"/>
@@ -89,10 +85,7 @@ function AccountSettings (){
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="name">Password: </Label>
                         <div className="flex items-center space-x-2 space-y-1.5">
-                            
                             {editPassword ? <Button type="button" onClick={switchPassword} className="float-right">{"Update Password"}</Button> : updatePassword()}
-
-                            
                         </div>
                     </div>
                 </div>
