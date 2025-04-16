@@ -15,7 +15,7 @@ type LoginRequest struct {
 	Password string `gorm:"not null;size:255"        json:"password"`
 }
 
-type userUpdateRequest struct {
+type UserUpdateRequest struct {
 	FirstName *string `json:"firstName,omitempty"` //if not provided omit it. 
 	LastName *string `json:"lastName,omitempty"` 
 	Email *string `json:"email,omitempty"` 
