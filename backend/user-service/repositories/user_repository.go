@@ -7,6 +7,15 @@ import (
 	"gorm.io/gorm"
 )
 
+func updateUser(user models.User) error {
+	db, err := config.GetDB()
+	if err != nil {
+		return models.User{}, err
+	}
+	result := db.Save(&user)
+	return result
+}
+
 func CreateUser(user models.User) (models.User, error) {
 	db, err := config.GetDB()
 	if err != nil {
