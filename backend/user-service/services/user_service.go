@@ -13,8 +13,43 @@ func NewUserService() *UserService {
 	return &UserService{}
 }
 
+
 func (s *UserService) GetUsers() ([]models.User, error) {
 	return repositories.GetAllUsers()
+}
+
+func (s *UserService) updateUser(update models.UserUpdateRequest) error {
+	
+	user, err := repositories.GetUserByID(userID) //check if user exists
+	
+	if err != nil { //if error we exit with the error
+		return err
+	}
+
+	if update.Email != nil {
+		if utils.CheckValidEmail(update.Email) {
+			return errors.New("email is of invalid format")
+		}
+		user.Email = *update.Email; 
+	}
+
+	if update.firstName != nil {
+		user.firstName = *update.firstName; 
+	}
+
+	if update.lastName != nil {
+		user.lastName = *update.lastName; 
+	}
+	
+	if update.Password != nil {
+		if utils.CheckPasswordValidity(update.Password) {
+			return errors.New("password must contain a special character and be at least 8 characters")
+		}
+		user.Password = *update.Password; 
+	}
+
+
+	
 }
 
 func (s *UserService) CreateUser(user models.User) (models.User, error) {
