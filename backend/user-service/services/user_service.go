@@ -41,15 +41,27 @@ func (s *UserService) updateUser(update models.UserUpdateRequest) error {
 		user.lastName = *update.lastName; 
 	}
 	
-	if update.Password != nil {
-		if utils.CheckPasswordValidity(update.Password) {
+	if update.newPasswordFirst != nil {
+		if update.OldPassword == nil {
+			return errors.New("Old password not provided")
+		} 
+		if update.newPasswordFirst != update.newPasswordSecond {
+			return errors.New("New password does not match")
+		}
+		if !utils.CheckPasswordHash(update.OldPassword, user.Password) {
+			return errors.New("Old password is incorrect")
+		}
+		if !utils.CheckPasswordValidity(update.Password) {
 			return errors.New("password must contain a special character and be at least 8 characters")
 		}
-		user.Password = *update.Password; 
+		hashedPassword, err := utils.HashPassword(user.Password)
+		
+		if err != nil {
+			return err
+		}
+		user.Password = hashedPassword
 	}
-
-
-	
+	return repositories.UpdateUser(user)
 }
 
 func (s *UserService) CreateUser(user models.User) (models.User, error) {
