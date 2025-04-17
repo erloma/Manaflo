@@ -1,49 +1,45 @@
 package handlers
 
 import (
-	"github.com/erloma/manaflo/backend/project-service/config"
 	"github.com/erloma/manaflo/backend/project-service/models"
+	"github.com/erloma/manaflo/backend/project-service/services"
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateProject(c *fiber.Ctx) error {
-	db, err := config.GetDB()
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
-	}
+type ProjectHandler struct {
+	service *services.ProjectService
+}
 
+func NewProjectHandler(svc *services.ProjectService) *ProjectHandler {
+	return &ProjectHandler{service: svc}
+}
+
+func (h *ProjectHandler) CreateProject(c *fiber.Ctx) error {
 	project := new(models.Project)
 
 	if err := c.BodyParser(project); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Unable to parse JSON"})
+		return c.Status(400).JSON(fiber.Map{"error": "Unable to parse JSON"})
 	}
 
-    if project.Name == "" || len(project.Name) > 255 || project.CreatedBy <= 0 {
-        return c.Status(400).JSON(fiber.Map{"error": "Invalid fields in project entered"})
-    }
+	if project.Name == "" || len(project.Name) > 255 || project.CreatedBy <= 0 {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid fields in project entered"})
+	}
 
-    // TODO add check if createdBy ID maps to a valid user
+	// TODO check if project.CreatedBy maps to real user
 
-	if err := db.Create(project).Error; err != nil {
+	if err := h.service.CreateProject(project); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Unable to create project"})
 	}
 
-	return c.JSON(project)
+	return c.Status(200).JSON(project)
 }
 
-func GetProjects(c *fiber.Ctx) error {
-	db, err := config.GetDB()
+func (h *ProjectHandler) GetProjects(c *fiber.Ctx) error {
+	projects, err := h.service.GetAllProjects()
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
-	}
-
-	projects := new([]models.Project)
-
-	if err := db.Find(projects).Error; err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Unable to fetch projects"})
 	}
-
-	return c.JSON(projects)
+	return c.Status(200).JSON(projects)
 
 }
 
