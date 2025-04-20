@@ -13,18 +13,58 @@ import {
   } from "@/components/ui/card"
 
 function AccountSettings (){
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [oldPassword, setOldPassword] = useState("");
+    const [NewPassword1, setNewPassword1] = useState("");
+    const [NewPassword2, setNewPassword2] = useState("");
+    //TODO: get the userID as from the token
+
+
     const [editFirstName, setEditFirstName] = useState(false);
     const [editLastName, setEditLastName] = useState(false);
     const [editEmail, setEditEmail] = useState(false);
     const [editPassword, setEditPassword] = useState(false);
 
-    function switchFirstName() {
+    async function switchFirstName() {
+        if (editFirstName) {
+            if (firstName) {
+                const response = await fetch("http://localhost:8080/api/users/{userID}", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ firstName }),
+                  });
+              
+                  if (!response.ok) throw new Error("Error when updating first name");
+                  return response.json();
+            }
+            
+        }
+        setEditFirstName(!editFirstName);
+    }
+    async function switchLasttName() {
+        if (editLastName) {
+            if (lastName) {
+                const response = await fetch("http://localhost:8080/api/users/{userID}", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ lastName }),
+                  });
+              
+                  if (!response.ok) throw new Error("Error when updating first name");
+                  return response.json();
+            }
+            
+        }
         setEditFirstName(!editFirstName);
     }
     function switchLastName() {
         setEditLastName(!editLastName);
     }
     function switchEmail() {
+        
+        
         setEditEmail(!editEmail);
     }
     function switchPassword() {
@@ -36,15 +76,19 @@ function AccountSettings (){
             <div className="m-4">
                 <div className="flex flex-col space-y-3 my-4">
                 <Label htmlFor="name">Old password: </Label>
-                <Input id="Password" placeholder="Old Password"/>
+                <Input 
+                    id="oldPassword"
+                    value={email}
+                    onChange={(e) => set(e.target.value)} 
+                    placeholder="Old Password"/>
                 </div>
                 <div className="flex flex-col space-y-3 my-4">
                     <Label htmlFor="name">New password </Label>
-                    <Input id="Password" placeholder="New Password"/>
+                    <Input id="newPassword1" placeholder="New Password"/>
                 </div>
                 <div className="flex flex-col space-y-3 my-4">
                 <Label htmlFor="name">Confirm new password: </Label>
-                <Input id="Password" placeholder="New Password"/>
+                <Input id="newPassword1" placeholder="New Password"/>
                 <Button type="button" onClick={switchPassword} className="float-right">{"Save Password"}</Button> 
                 </div>
             </div>
