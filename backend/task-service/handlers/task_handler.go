@@ -1,42 +1,37 @@
 package handlers
 
 import (
-    "github.com/gofiber/fiber/v2"
-    "github.com/erloma/manaflo/backend/task-service/config"
-    "github.com/erloma/manaflo/backend/task-service/models"
+	"fmt"
+	"github.com/erloma/manaflo/backend/task-service/models"
+	"github.com/erloma/manaflo/backend/task-service/services"
+	"github.com/gofiber/fiber/v2"
 )
 
-
-func CreateTask(c *fiber.Ctx) error {
-    db, err := config.GetDB();
-    if err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
-    }
-
-    task := new(models.Task)
-
-    if err := c.BodyParser(task); err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Unable to parse JSON"})
-    }
-
-    if err := db.Create(task).Error; err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Unable create task"})
-    }
-
-    return c.JSON(task)
+type TaskHandler struct {
+	taskService *services.TaskService
 }
 
-func GetTasks(c *fiber.Ctx) error {
-    db, err := config.GetDB();
-    if err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
-    }
+func NewTaskHandler(taskService *services.TaskService) *TaskHandler {
+	return &TaskHandler{taskService: taskService}
+}
 
-    tasks := new([]models.Task)
+func (h *TaskHandler) GetTasks(c *fiber.Ctx) error {
+	tasks, err := h.taskService.GetTasks()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+	return c.JSON(tasks)
+}
 
-    if err := db.Find(tasks).Error; err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Unable to fetch tasks"})
-    }
+func (h *TaskHandler) CreateTask(c *fiber.Ctx) error {
+	var task models.Task
+	if err := c.BodyParser(&task); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Unable to parse JSON"})
+	}
+	_, err := h.taskService.CreateTask(task)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
+	}
 
-    return c.JSON(tasks)
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Task created successfully"})
 }

@@ -1,41 +1,83 @@
 package handlers
 
 import (
-    "github.com/gofiber/fiber/v2"
-    "github.com/erloma/manaflo/backend/user-service/config"
-    "github.com/erloma/manaflo/backend/user-service/models"
+	"github.com/erloma/manaflo/backend/user-service/auth"
+	"github.com/erloma/manaflo/backend/user-service/models"
+	"github.com/erloma/manaflo/backend/user-service/services"
+	"github.com/gofiber/fiber/v2"
+	"strconv"
 )
 
-func PingHandler(c *fiber.Ctx) error {
+type UserHandler struct {
+	userService *services.UserService
+}
+
+func NewUserHandler(userService *services.UserService) *UserHandler {
+	return &UserHandler{userService: userService}
+}
+
+func (h *UserHandler) PingHandler(c *fiber.Ctx) error {
 	return c.SendString("Server is running!")
 }
 
-func GetUsers(c *fiber.Ctx) error {
-    db, err := config.GetDB()
-    if err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
-    }
-
-    var users []models.User
-    if err := db.Find(&users).Error; err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Failed to fetch users"})
-    }
-    return c.JSON(users)
+func (h *UserHandler) GetUsers(c *fiber.Ctx) error {
+	users, err := h.userService.GetUsers()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+	return c.JSON(users)
 }
 
-func CreateUser(c *fiber.Ctx) error {
-    db, err := config.GetDB()
-    if err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
-    }
+func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
+	var user models.User
+	if err := c.BodyParser(&user); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Cannot parse JSON"})
+	}
+	_, err := h.userService.CreateUser(user)
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
+	}
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "User created successfully"})
+}
 
-    user := new(models.User)
-    if err := c.BodyParser(user); err != nil {
-        return c.Status(400).JSON(fiber.Map{"error": "Cannot parse JSON"})
-    }
+func (h *UserHandler) LoginUser(c *fiber.Ctx) error {
+	var request models.LoginRequest
+	if err := c.BodyParser(&request); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Cannot parse JSON"})
+	}
+	loggedInUser, err := h.userService.LoginUser(request)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+	}
+	if loggedInUser.ID != 0 {
+		token, err := auth.GenerateToken(strconv.Itoa(int(loggedInUser.ID)))
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Could not generate token"})
+		}
+		return c.JSON(fiber.Map{
+			"token":   token,
+			"message": "Login successful",
+		})
+	}
+	return c.Status(401).JSON(fiber.Map{"error": "Invalid credentials"})
+}
 
-    if err := db.Create(&user).Error; err != nil {
-        return c.Status(500).JSON(fiber.Map{"error": "Failed to create user"})
-    }
-    return c.JSON(user)
+func (h *UserHandler) GetUserProfile(c *fiber.Ctx) error {
+
+	// Get userID from middleware (which has parsed the token)
+	userID, ok := c.Locals("userID").(string)
+
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "User ID not found or invalid"})
+	}
+
+	user, err := h.userService.GetUserByID(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to fetch user profile"})
+	}
+
+	if user.ID == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
+	}
+	return c.JSON(user)
 }
