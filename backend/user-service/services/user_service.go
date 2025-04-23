@@ -18,46 +18,46 @@ func (s *UserService) GetUsers() ([]models.User, error) {
 	return repositories.GetAllUsers()
 }
 
-func (s *UserService) updateUser(update models.UserUpdateRequest) error {
+func (s *UserService) UpdateUser(userID string, update models.UserUpdateRequest) (models.User, error) {
 	
 	user, err := repositories.GetUserByID(userID) //check if user exists
 	
 	if err != nil { //if error we exit with the error
-		return err
+		return models.User{}, err
 	}
 
 	if update.Email != nil {
-		if utils.CheckValidEmail(update.Email) {
-			return errors.New("email is of invalid format")
+		if utils.CheckValidEmail(*update.Email) {
+			return models.User{}, errors.New("email is of invalid format")
 		}
 		user.Email = *update.Email; 
 	}
 
-	if update.firstName != nil {
-		user.firstName = *update.firstName; 
+	if update.FirstName != nil {
+		user.FirstName = *update.FirstName; 
 	}
 
-	if update.lastName != nil {
-		user.lastName = *update.lastName; 
+	if update.LastName != nil {
+		user.LastName = *update.LastName; 
 	}
 	
-	if update.newPasswordFirst != nil {
+	if update.NewPasswordFirst != nil {
 		if update.OldPassword == nil {
-			return errors.New("Old password not provided")
+			return models.User{}, errors.New("Old password not provided")
 		} 
-		if update.newPasswordFirst != update.newPasswordSecond {
-			return errors.New("New password does not match")
+		if *update.NewPasswordFirst != *update.NewPasswordSecond {
+			return models.User{}, errors.New("New password does not match")
 		}
-		if !utils.CheckPasswordHash(update.OldPassword, user.Password) {
-			return errors.New("Old password is incorrect")
+		if !utils.CheckPasswordHash(*update.OldPassword, user.Password) {
+			return models.User{}, errors.New("Old password is incorrect")
 		}
-		if !utils.CheckPasswordValidity(update.Password) {
-			return errors.New("password must contain a special character and be at least 8 characters")
+		if !utils.CheckPasswordValidity(*update.NewPasswordFirst) {
+			return models.User{}, errors.New("password must contain a special character and be at least 8 characters")
 		}
-		hashedPassword, err := utils.HashPassword(user.Password)
+		hashedPassword, err := utils.HashPassword(*update.NewPasswordFirst)
 		
 		if err != nil {
-			return err
+			return models.User{}, err
 		}
 		user.Password = hashedPassword
 	}

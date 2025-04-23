@@ -41,15 +41,15 @@ func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 }
 
 func (h *UserHandler) UpdateUser(c *fiber.Ctx) error {
-	var userID = c.Params("id");
-	if !userID {
+	userID := c.Params("id")
+	if (userID == "") {
 		return c.Status(400).JSON(fiber.Map{"error": "ID is missing in request"})
 	}
 	var updateRequest models.UserUpdateRequest
 	if err := c.BodyParser(&updateRequest); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Cannot parse JSON"})
 	}
-	_, err := h.userService.updateUser(updateRequest)
+	_, err := h.userService.UpdateUser(userID, updateRequest)
 	if (err != nil) {
 		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}

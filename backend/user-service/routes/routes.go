@@ -13,7 +13,7 @@ func SetupRoutes(app *fiber.App, userHandler *handlers.UserHandler) {
 	app.Get("/api/users", userHandler.GetUsers)
 	app.Post("/api/users", userHandler.CreateUser)
 	app.Post("/api/login", userHandler.LoginUser)
-	app.Patch("/api/users/:id", userHandler.updateUser)
+	app.Patch("/api/users/:id", userHandler.UpdateUser)
 
 	// Protected routes (below this point)
 	api := app.Group("/api", middleware.AuthRequired())
