@@ -10,10 +10,10 @@ import (
 func updateUser(user models.User) error {
 	db, err := config.GetDB()
 	if err != nil {
-		return models.User{}, err
+		return err
 	}
 	result := db.Save(&user)
-	return result
+	return result.Error
 }
 
 func CreateUser(user models.User) (models.User, error) {
