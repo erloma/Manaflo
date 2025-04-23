@@ -42,7 +42,7 @@ export function CardWithForm() {
     };
 
     try {
-      const res = await fetch("/api/projects", {
+      const res = await fetch("http://localhost:8082/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
