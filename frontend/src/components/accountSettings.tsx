@@ -154,6 +154,8 @@ function AccountSettings (){
                 <Label htmlFor="name">Old password: </Label>
                 <Input 
                     id="oldPassword"
+                    type="password"
+                    autoComplete="current-password"
                     value={oldPassword}
                     onChange={(e) => setOldPassword(e.target.value)} 
                     placeholder="Old Password"/>
@@ -162,6 +164,8 @@ function AccountSettings (){
                     <Label htmlFor="name">New password </Label>
                     <Input 
                         id="newPasswordFirst" 
+                        type="password"
+                        autoComplete="new-password"
                         value={newPasswordFirst}
                         onChange={(e) => setNewPasswordFirst(e.target.value)} 
                         placeholder="New Password"/>
@@ -170,6 +174,8 @@ function AccountSettings (){
                 <Label htmlFor="name">Confirm new password: </Label>
                 <Input 
                     id="newPasswordSecond" 
+                    type="password"
+                    autoComplete="new-password"
                     value={newPasswordSecond}
                     onChange={(e) => setNewPasswordSecond(e.target.value)} 
                     placeholder="New Password"/>
