@@ -75,7 +75,7 @@ function AccountSettings (){
 
 //-------------------------- General Update Function --------------------------------
 
-    async function updateUserField<T> (
+    async function updateUserField (
         fieldName: string, 
         fieldValue: string,
         currentValueSetter: React.Dispatch<React.SetStateAction<string>>,
@@ -103,6 +103,7 @@ function AccountSettings (){
                 console.error(err);
             }
         }
+        setError("");
         editSetter(!editState);
     }
 
@@ -118,11 +119,35 @@ function AccountSettings (){
     }
 
     //-------------------- Update Password Method --------------------
-    function switchPassword() {
+    async function switchPassword() {
+        if (editPassword && oldPassword && newPasswordFirst && newPasswordSecond) {
+            try {
+            const response = await fetch(`http://localhost:8080/api/users/${userID}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ oldPassword, newPasswordFirst, newPasswordSecond }),
+            });
+          
+            if (!response.ok) {
+                const data = await response.json();
+                setError(data.error);
+                throw new Error("Error when updating password");
+            
+            }  
+            console.log("Password updated: ", response.status);
+            alert("PASSWORD UPDATED!")
+
+            } catch (err) {
+                console.error(err);
+                return
+            }
+        }
+        setError("");
         setEditPassword(!editPassword);
     }
 
-    function updatePassword() {
+//------------------------ Update password form --------------------------------------- 
+    function updatePasswordForm() {
         return (
             <div className="m-4">
                 <div className="flex flex-col space-y-3 my-4">
@@ -200,7 +225,7 @@ function AccountSettings (){
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="name">Password: </Label>
                         <div className="flex items-center space-x-2 space-y-1.5">
-                            {editPassword ? updatePassword() : <Button type="button" onClick={switchPassword} className="float-right">{"Update Password"}</Button>}
+                            {editPassword ? updatePasswordForm() : <Button type="button" onClick={switchPassword} className="float-right">{"Update Password"}</Button>}
                         </div>
                     </div>
                 </div>
