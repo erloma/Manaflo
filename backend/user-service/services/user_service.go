@@ -22,34 +22,48 @@ func (s *UserService) UpdateUser(userID string, update models.UserUpdateRequest)
 	
 	user, err := repositories.GetUserByID(userID) //check if user exists
 	
+	updated := false; 
+
 	if err != nil { //if error we exit with the error
 		return models.User{}, err
 	}
 
 	if update.Email != nil {
-		if utils.CheckValidEmail(*update.Email) {
+		if !utils.CheckValidEmail(*update.Email) {
 			return models.User{}, errors.New("email is of invalid format")
 		}
 		user.Email = *update.Email; 
+		updated = true;
 	}
 
 	if update.FirstName != nil {
-		user.FirstName = *update.FirstName; 
+		user.FirstName = *update.FirstName;
+		updated = true; 
 	}
 
 	if update.LastName != nil {
-		user.LastName = *update.LastName; 
+		user.LastName = *update.LastName;
+		updated = true; 
 	}
 	
-	if update.NewPasswordFirst != nil {
+	if (update.NewPasswordFirst != nil || update.OldPassword!= nil || update.NewPasswordSecond != nil) {
 		if update.OldPassword == nil {
-			return models.User{}, errors.New("Old password not provided")
+			return models.User{}, errors.New("old password not provided")
+		} 
+		if update.NewPasswordFirst == nil {
+			return models.User{}, errors.New("new password not provided")
+		} 
+		if update.NewPasswordSecond == nil {
+			return models.User{}, errors.New("new password validation not provided")
 		} 
 		if *update.NewPasswordFirst != *update.NewPasswordSecond {
-			return models.User{}, errors.New("New password does not match")
+			return models.User{}, errors.New("new password does not match")
 		}
 		if !utils.CheckPasswordHash(*update.OldPassword, user.Password) {
-			return models.User{}, errors.New("Old password is incorrect")
+			return models.User{}, errors.New("old password is incorrect")
+		}
+		if *update.OldPassword == *update.NewPasswordFirst {
+			return models.User{}, errors.New("new password is same as old password")
 		}
 		if !utils.CheckPasswordValidity(*update.NewPasswordFirst) {
 			return models.User{}, errors.New("password must contain a special character and be at least 8 characters")
@@ -60,8 +74,12 @@ func (s *UserService) UpdateUser(userID string, update models.UserUpdateRequest)
 			return models.User{}, err
 		}
 		user.Password = hashedPassword
+		updated = true;
 	}
-	return repositories.UpdateUser(user)
+	if updated {
+		return repositories.UpdateUser(user)
+	}
+	return models.User{}, errors.New("nothing updated, missing information")
 }
 
 func (s *UserService) CreateUser(user models.User) (models.User, error) {
