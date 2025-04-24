@@ -2,7 +2,7 @@ import {Button} from "./ui/button.tsx"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {jwtDecode} from "jwt-decode"
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     Card,
@@ -14,6 +14,8 @@ import {
   } from "@/components/ui/card"
 
 function AccountSettings (){
+
+    //inputData ---------------------------
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -22,10 +24,20 @@ function AccountSettings (){
     const [newPasswordSecond, setNewPasswordSecond] = useState("");
     const [error, setError] = useState("");
 
+
+    //edit states ---------------------------
     const [editFirstName, setEditFirstName] = useState(false);
     const [editLastName, setEditLastName] = useState(false);
     const [editEmail, setEditEmail] = useState(false);
     const [editPassword, setEditPassword] = useState(false);
+
+    //stored data ---------------------------
+    const [curFirstName, setCurFirstName] = useState("No data");
+    const [curLastName, setCurLastName] = useState("No data");
+    const [curEmail, setCurEmail] = useState("No data");
+    const [userID, setUserID] = useState<string | null>(null);
+
+//
 
 //----------------------------- Get User Token info ---------------------------------------------
 
@@ -36,14 +48,30 @@ function AccountSettings (){
     }   
 
     const token = localStorage.getItem("token");
+    
+    useEffect(() => {
+        if (token) {
+          const decoded = jwtDecode<TokenPayload>(token);
+          setUserID(decoded.user_id);
+          getUser(); 
+        }
+      }, []);
+    
+//-------------------------- Get User -----------------------------------
+    async function getUser() {
+        const response = await fetch(`http://localhost:8080/api/user/profile`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            },
+        });
 
-    let userID: string | null = null;
-
-    if (token) {
-        const decoded = jwtDecode<TokenPayload>(token);
-        userID = decoded.user_id; // This matches the Go struct field
+        const data = await response.json();
+        if(data.firstName) setCurFirstName(data.firstName);
+        if(data.lastName) setCurLastName(data.lastName);
+        if(data.email) setCurEmail(data.email);
     }
-    console.log("UserID: ", userID);
 
 //-------------------------- Button Functions
 
@@ -56,11 +84,12 @@ function AccountSettings (){
                   });
               
                   if (!response.ok) {
-                    setError(await response.text());
+                    const data = await response.json()
+                    setError(data.error);
                     throw new Error("Error when updating first name");
                   }  
-                    
-                  return response.json();
+                  console.log("First name updated: ", response.status)
+                  setCurFirstName(firstName)
         }
         setEditFirstName(!editFirstName);
     }
@@ -73,16 +102,31 @@ function AccountSettings (){
                   });
               
                   if (!response.ok) {
-                    setError(await response.text());
+                    const data = await response.json()
+                    setError(data.error);
                     throw new Error("Error when updating last name");
                   }  
-                  return response.json();        
+                  console.log("Last name updated: ", response.status)
+                  setCurLastName(lastName)       
         }
         setEditLastName(!editLastName);
     }
-    function switchEmail() {
-        
-        
+    async function switchEmail() {
+        if (editEmail && email) {
+            const response = await fetch(`http://localhost:8080/api/users/${userID}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+              });
+          
+              if (!response.ok) {
+                const data = await response.json()
+                setError(data.error);
+                throw new Error("Error when updating email");
+              }  
+              console.log("Email name updated: ", response.status)
+              setCurEmail(email)       
+        }
         setEditEmail(!editEmail);
     }
     function switchPassword() {
@@ -138,7 +182,7 @@ function AccountSettings (){
                                 id="firstName" 
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)} 
-                                placeholder="New first name"/> : <p>Sperma</p>}
+                                placeholder="New first name"/> : <p>{curFirstName}</p>}
                             {editFirstName ? <Button type="button" onClick={switchFirstName} className="float-right">Save</Button> : <img className="size-5.5"src="/images/editIcon.png" alt="edit icon" onClick={switchFirstName}/>}
                         </div>
                     </div>
@@ -149,7 +193,7 @@ function AccountSettings (){
                             id="lastName" 
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)} 
-                            placeholder="New last name"/> : <p>Donatorn</p>}
+                            placeholder="New last name"/> : <p>{curLastName}</p>}
                             {editLastName ? <Button type="button" onClick={switchLastName} className="float-right">Save</Button> : <img className="size-5.5"src="/images/editIcon.png" alt="edit icon" onClick={switchLastName}/>}
                             </div> 
                     </div> 
@@ -160,14 +204,14 @@ function AccountSettings (){
                                 id="email" 
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)} 
-                                placeholder="New e-mail"/> : <p>example@post.se</p>}
+                                placeholder="New e-mail"/> : <p>{curEmail}</p>}
                                 {editEmail ? <Button type="button" onClick={switchEmail} className="float-right">Save</Button> : <img className="size-5.5"src="/images/editIcon.png" alt="edit icon" onClick={switchEmail}/>}
                             </div>
                     </div>
                     <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="name">Password: </Label>
                         <div className="flex items-center space-x-2 space-y-1.5">
-                            {editPassword ? <Button type="button" onClick={switchPassword} className="float-right">{"Update Password"}</Button> : updatePassword()}
+                            {editPassword ? updatePassword() : <Button type="button" onClick={switchPassword} className="float-right">{"Update Password"}</Button>}
                         </div>
                     </div>
                 </div>
