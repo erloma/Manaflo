@@ -73,62 +73,51 @@ function AccountSettings (){
         if(data.email) setCurEmail(data.email);
     }
 
-//-------------------------- Button Functions
+//-------------------------- General Update Function --------------------------------
 
-    async function switchFirstName() {
-        if (editFirstName && firstName) {
-                const response = await fetch(`http://localhost:8080/api/users/${userID}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ firstName }),
-                  });
-              
-                  if (!response.ok) {
-                    const data = await response.json()
-                    setError(data.error);
-                    throw new Error("Error when updating first name");
-                  }  
-                  console.log("First name updated: ", response.status)
-                  setCurFirstName(firstName)
-        }
-        setEditFirstName(!editFirstName);
-    }
-    async function switchLastName() {
-        if (editLastName && lastName) {
-                const response = await fetch(`http://localhost:8080/api/users/${userID}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ lastName }),
-                  });
-              
-                  if (!response.ok) {
-                    const data = await response.json()
-                    setError(data.error);
-                    throw new Error("Error when updating last name");
-                  }  
-                  console.log("Last name updated: ", response.status)
-                  setCurLastName(lastName)       
-        }
-        setEditLastName(!editLastName);
-    }
-    async function switchEmail() {
-        if (editEmail && email) {
+    async function updateUserField<T> (
+        fieldName: string, 
+        fieldValue: string,
+        currentValueSetter: React.Dispatch<React.SetStateAction<string>>,
+        editSetter: React.Dispatch<React.SetStateAction<boolean>>,
+        editState: boolean
+    ){
+        if (editState && fieldValue) {
+            try {
             const response = await fetch(`http://localhost:8080/api/users/${userID}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
-              });
+                body: JSON.stringify({ [fieldName]: fieldValue }),
+            });
           
-              if (!response.ok) {
-                const data = await response.json()
+            if (!response.ok) {
+                const data = await response.json();
                 setError(data.error);
-                throw new Error("Error when updating email");
-              }  
-              console.log("Email name updated: ", response.status)
-              setCurEmail(email)       
+                throw new Error(`Error when updating ${fieldName}`);
+            
+            }  
+            console.log(`${fieldName} updated: `, response.status);
+            currentValueSetter(fieldValue);
+
+            } catch (err) {
+                console.error(err);
+            }
         }
-        setEditEmail(!editEmail);
+        editSetter(!editState);
     }
+
+    //-------------------- switch Calls --------------------
+    async function switchFirstName() {
+        await updateUserField("firstName", firstName, setCurFirstName, setEditFirstName, editFirstName);
+    }
+    async function switchLastName() {
+        await updateUserField("lastName", lastName, setCurLastName, setEditLastName, editLastName);
+    }
+    async function switchEmail() {
+        await updateUserField("email", email, setCurEmail, setEditEmail, editEmail);
+    }
+
+    //-------------------- Update Password Method --------------------
     function switchPassword() {
         setEditPassword(!editPassword);
     }
