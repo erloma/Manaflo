@@ -42,6 +42,7 @@ export function CreateTaskForm() {
   const [description, setDesc] = useState("");
   const [priority, setPriority] = useState("");
   const [date, setDate] = useState<Date>(new Date);
+  const [createdLabel, setCreatedLabel] = useState(false);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const processedTitle = event.target.value.trim(); // removes leading/trailing spaces
@@ -59,6 +60,13 @@ export function CreateTaskForm() {
 
   const handleDateChange = (selectedDate: Date) => {
     setDate(selectedDate);
+  }
+
+  const handleCreatedLabel = () => {
+    setCreatedLabel(true);
+    setTimeout(() => {
+      setCreatedLabel(false);
+    }, 3000);
   }
 
   const projectId = 42069;
@@ -83,8 +91,12 @@ export function CreateTaskForm() {
       body: JSON.stringify(payload),
     });
 
-    if (!response.ok) throw new Error("Error creating task");
-    alert("task created");
+    if (!response.ok) {
+      alert("Error creating task");
+      throw new Error("Error creating task");
+    }
+
+    handleCreatedLabel();
     setDate(new Date);
     setDesc("");
     setPriority("");
@@ -145,10 +157,15 @@ export function CreateTaskForm() {
                   {/* TODO: dynamically load project members */}
                 </SelectContent>
               </Select>
+              
             </div>
           </div>
+
           <CardFooter className="flex justify-between pt-4">
             <Button variant="outline">Cancel</Button>
+            {createdLabel && (<Label className="text-green-400">
+                Task created successfully!
+              </Label>)}
             <Button type="submit">Create task</Button>
           </CardFooter>
         </form>
