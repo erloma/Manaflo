@@ -93,7 +93,6 @@ export function CreateTaskForm() {
 
     if (!response.ok) {
       alert("Error creating task");
-      throw new Error("Error creating task");
     }
 
     handleCreatedLabel();
