@@ -8,12 +8,12 @@ services:
     env_file:
       - .env
     depends_on:
-      - postgres
+      - user-service-postgres
     restart: always
     networks:
       - manaflo-network
   
-  postgres:
+  user-service-postgres:
     image: postgres:latest
     environment:
       POSTGRES_USER: ${DB_USER}
