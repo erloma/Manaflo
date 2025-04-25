@@ -1,3 +1,10 @@
+---
+name: Pull Request
+about: Template for submitting a pull request
+title: "[PR Title]"
+labels: ''
+assignees: ''
+---
   
 **Description** <br />  
 `_Description about the merge. what it affects and what you have done_`

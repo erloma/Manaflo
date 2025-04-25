@@ -1,3 +1,11 @@
+---
+name: Standard Issue
+about: Template for reporting standard issues
+title: "[ISSUE]"
+labels: ''
+assignees: ''
+---
+
 ## User Story
 
 * As a **`<role>`**, I want **`<feature>`**, so that **`<benefit>`**.
