@@ -84,6 +84,11 @@ export function CreateTaskForm() {
     });
 
     if (!response.ok) throw new Error("Error creating task");
+    alert("task created");
+    setDate(new Date);
+    setDesc("");
+    setPriority("");
+    setTitle("");
     return response.json();
 
 
