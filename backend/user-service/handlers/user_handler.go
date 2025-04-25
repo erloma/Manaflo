@@ -40,6 +40,22 @@ func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "User created successfully"})
 }
 
+func (h *UserHandler) UpdateUser(c *fiber.Ctx) error {
+	userID := c.Params("id")
+	if (userID == "") {
+		return c.Status(400).JSON(fiber.Map{"error": "ID is missing in request"})
+	}
+	var updateRequest models.UserUpdateRequest
+	if err := c.BodyParser(&updateRequest); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Cannot parse JSON"})
+	}
+	_, err := h.userService.UpdateUser(userID, updateRequest)
+	if (err != nil) {
+		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
+	}
+	return c.Status(200).JSON(fiber.Map{"message": "User successfully updated"})
+}
+
 func (h *UserHandler) LoginUser(c *fiber.Ctx) error {
 	var request models.LoginRequest
 	if err := c.BodyParser(&request); err != nil {
