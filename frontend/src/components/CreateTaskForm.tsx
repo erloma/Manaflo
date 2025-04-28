@@ -38,6 +38,9 @@ export function CreateTaskForm() {
   const [date, setDate] = useState<Date>(new Date);
   const [createdLabel, setCreatedLabel] = useState(false);
 
+  const token = localStorage.getItem("token");
+
+
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const processedTitle = event.target.value.trim(); // removes leading/trailing spaces
     setTitle(processedTitle);
@@ -79,7 +82,7 @@ export function CreateTaskForm() {
       assigned_to: createdBy
     };
 
-    const response = await createTask(payload);
+    const response = await createTask(payload, token);
     if (!response.ok) throw new Error("Error creating task");
     handleCreatedLabel();
     setPriority("");
