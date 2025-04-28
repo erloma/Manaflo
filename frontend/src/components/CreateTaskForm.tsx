@@ -79,8 +79,12 @@ export function CreateTaskForm() {
       assigned_to: createdBy
     };
 
-    const response = await createTask(payload); 
+    const response = await createTask(payload);
     if (!response.ok) throw new Error("Error creating task");
+    handleCreatedLabel();
+    setPriority("");
+    setDesc("");
+    setTitle("");
     return response.json();
 
   }
@@ -135,15 +139,15 @@ export function CreateTaskForm() {
                   {/* TODO: dynamically load project members */}
                 </SelectContent>
               </Select>
-              
+
             </div>
           </div>
 
           <CardFooter className="flex justify-between pt-4">
             <Button variant="outline">Cancel</Button>
             {createdLabel && (<Label className="text-green-400">
-                Task created successfully!
-              </Label>)}
+              Task created successfully!
+            </Label>)}
             <Button type="submit">Create task</Button>
           </CardFooter>
         </form>
