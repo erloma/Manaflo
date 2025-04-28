@@ -83,6 +83,16 @@ export function CardWithForm() {
               />
             </div>
             <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="description">Description</Label>
+              <textarea
+                id="description"
+                placeholder="Enter project description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full rounded border p-2"
+              />
+            </div>
+            <div className="flex flex-col space-y-1.5">
               <Label htmlFor="framework">Type</Label>
               <Select onValueChange={setType} value={type}>
                 <SelectTrigger id="framework">
@@ -98,16 +108,7 @@ export function CardWithForm() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="description">Description</Label>
-              <textarea
-                id="description"
-                placeholder="Enter project description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full rounded border p-2"
-              />
-            </div>
+            
 
             {error && <p className="text-red-500">{error}</p>}
             {success && <p className="text-green-500">{success}</p>}
