@@ -83,6 +83,17 @@ export function CardWithForm() {
             </div>
 
             <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="description">Description</Label>
+              <Input
+                id="description"
+                placeholder="Describe your project"
+                value={desc}
+                onChange={(e) => setDescription(e.target.value)}
+                className="h-24 resize-none" 
+              />
+            </div>
+
+            <div className="flex flex-col space-y-1.5">
               <Label htmlFor="type">Type</Label>
               <Select onValueChange={setType} value={type}>
                 <SelectTrigger id="type">
@@ -96,16 +107,7 @@ export function CardWithForm() {
               </Select>
             </div>
 
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="description">Description</Label>
-              <Input
-                id="description"
-                placeholder="Describe your project"
-                value={desc}
-                onChange={(e) => setDescription(e.target.value)}
-                className="h-24 resize-none" 
-              />
-            </div>
+            
 
             {error && <p className="text-red-500">{error}</p>}
             {success && <p className="text-green-500">{success}</p>}
