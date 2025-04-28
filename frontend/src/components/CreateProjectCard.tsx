@@ -17,6 +17,8 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { createProjectService } from "@/lib/api/services/projects";
+import { CreateProjectRequest } from "@/lib/api/types/project";
 
 export function CardWithForm() {
   const [name, setName] = useState<string>("");
@@ -35,7 +37,7 @@ export function CardWithForm() {
       return;
     }
 
-    const payload = {
+    const payload : CreateProjectRequest = {
       name,
       description,
       type,
@@ -44,11 +46,7 @@ export function CardWithForm() {
     };
 
     try {
-      const res = await fetch("http://localhost:8082/api/projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await createProjectService(payload); 
 
       const body = await res.json();
       if (!res.ok) {
