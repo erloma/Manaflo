@@ -1,7 +1,7 @@
 import * as React from "react"
 
-import { SearchForm } from "@/components/search-form"
-import { VersionSwitcher } from "@/components/version-switcher"
+import { SearchForm } from "@/components/SearchForm"
+import { VersionSwitcher } from "@/components/VersionSwitcher"
 import {
   Sidebar,
   SidebarContent,
@@ -17,135 +17,119 @@ import {
 
 // This is sample data.
 const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
+  versions: ["2.0"],
   navMain: [
     {
-      title: "Getting Started",
+      title: "Project Overview",
       url: "#",
       items: [
         {
-          title: "Installation",
+          title: "Project Dashboard",
           url: "#",
         },
         {
-          title: "Project Structure",
+          title: "Team Members",
+          url: "#",
+        },
+        {
+          title: "Timeline",
+          url: "#",
+        },
+        {
+          title: "Tasks",
+          url: "#",
+        },
+        {
+          title: "Progress Tracker",
           url: "#",
         },
       ],
     },
     {
-      title: "Building Your Application",
+      title: "Task Management",
       url: "#",
       items: [
         {
-          title: "Routing",
+          title: "Create Task",
           url: "#",
         },
         {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "Rendering",
+          title: "Task Lists",
           url: "#",
         },
         {
-          title: "Caching",
+          title: "Task Assignments",
           url: "#",
         },
         {
-          title: "Styling",
+          title: "Task Status",
           url: "#",
         },
         {
-          title: "Optimizing",
+          title: "Due Dates",
           url: "#",
         },
         {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
+          title: "Dependencies",
           url: "#",
         },
       ],
     },
     {
-      title: "API Reference",
+      title: "Team Collaboration",
       url: "#",
       items: [
         {
-          title: "Components",
+          title: "Team Chat",
           url: "#",
         },
         {
-          title: "File Conventions",
+          title: "Shared Files",
           url: "#",
         },
         {
-          title: "Functions",
+          title: "Meeting Notes",
           url: "#",
         },
         {
-          title: "next.config.js Options",
+          title: "Discussions",
           url: "#",
         },
         {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
+          title: "Announcements",
           url: "#",
         },
       ],
     },
     {
-      title: "Architecture",
+      title: "Project Settings",
       url: "#",
       items: [
         {
-          title: "Accessibility",
+          title: "General Settings",
           url: "#",
         },
         {
-          title: "Fast Refresh",
+          title: "Permissions",
           url: "#",
         },
         {
-          title: "Next.js Compiler",
+          title: "Notifications",
           url: "#",
         },
         {
-          title: "Supported Browsers",
+          title: "Integrations",
           url: "#",
         },
         {
-          title: "Turbopack",
+          title: "Billing",
           url: "#",
         },
       ],
     },
   ],
 }
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
