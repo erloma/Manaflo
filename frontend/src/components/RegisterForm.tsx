@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RegisterRequest } from "@/lib/api/types/user";
+import { registerUserService } from "@/lib/api/services/users";
 
 export function RegisterForm() {
   const navigate = useNavigate();
@@ -13,35 +15,30 @@ export function RegisterForm() {
   const [password2, setPassword2] = useState("");
   const [error, setError] = useState("");
 
-  const registerUser = async (
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string
-  ) => {
-    const response = await fetch("http://localhost:8080/api/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstName, lastName, email, password }),
-    });
-  
-    if (!response.ok) {
-      const errorData = await response.json(); 
-      throw new Error(errorData.error || "Registration failed.");
-    }
-  };
-  
   const handleRegistration = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
-  
+
     if (password1 !== password2) {
       setError("Passwords do not match.");
       return;
     }
-  
+
+    const registerData: RegisterRequest = {
+      firstName,
+      lastName,
+      email,
+      password: password1,
+    };
+
     try {
-      await registerUser(firstName, lastName, email, password1);
+      const response = await registerUserService(registerData);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Registration failed.");
+      }
+
       navigate("/login");
     } catch (err) {
       if (err instanceof Error) {
@@ -51,7 +48,6 @@ export function RegisterForm() {
       }
     }
   };
-  
 
   return (
     <form className="flex flex-col gap-6" onSubmit={handleRegistration}>

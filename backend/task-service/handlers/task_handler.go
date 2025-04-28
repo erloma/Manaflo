@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/erloma/manaflo/backend/task-service/models"
 	"github.com/erloma/manaflo/backend/task-service/services"
 	"github.com/gofiber/fiber/v2"
