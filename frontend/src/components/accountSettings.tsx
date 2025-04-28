@@ -12,6 +12,7 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
+import { getUserService } from "@/lib/api/services/users.ts";
 
 function AccountSettings (){
 
@@ -44,7 +45,6 @@ function AccountSettings (){
     interface TokenPayload {
         user_id: string;
         exp: number;
-        // You can add other fields here if needed
     }   
 
     const token = localStorage.getItem("token");
@@ -59,13 +59,7 @@ function AccountSettings (){
     
 //-------------------------- Get User -----------------------------------
     async function getUser() {
-        const response = await fetch(`http://localhost:8080/api/user/profile`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}` 
-            },
-        });
+        const response = await getUserService(token); 
 
         const data = await response.json();
         if(data.firstName) setCurFirstName(data.firstName);
