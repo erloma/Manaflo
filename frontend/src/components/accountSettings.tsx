@@ -1,7 +1,7 @@
-import {Button} from "./ui/button.tsx"
+import { Button } from "./ui/button.tsx"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {jwtDecode} from "jwt-decode"
+import { jwtDecode } from "jwt-decode"
 import { useEffect, useState } from "react";
 
 import {
@@ -11,10 +11,10 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-  } from "@/components/ui/card"
-import { getUserService } from "@/lib/api/services/users.ts";
+} from "@/components/ui/card"
+import { getUserService, updateUserFieldService, updateUserPasswordService } from "@/lib/api/services/users.ts";
 
-function AccountSettings (){
+function AccountSettings() {
 
     //inputData ---------------------------
     const [firstName, setFirstName] = useState("");
@@ -38,60 +38,56 @@ function AccountSettings (){
     const [curEmail, setCurEmail] = useState("No data");
     const [userID, setUserID] = useState<string | null>(null);
 
-//
+    //
 
-//----------------------------- Get User Token info ---------------------------------------------
+    //----------------------------- Get User Token info ---------------------------------------------
 
     interface TokenPayload {
         user_id: string;
         exp: number;
-    }   
-
-    const token = localStorage.getItem("token");
-    
-    useEffect(() => {
-        if (token) {
-          const decoded = jwtDecode<TokenPayload>(token);
-          setUserID(decoded.user_id);
-          getUser(); 
-        }
-      }, []);
-    
-//-------------------------- Get User -----------------------------------
-    async function getUser() {
-        const response = await getUserService(token); 
-
-        const data = await response.json();
-        if(data.firstName) setCurFirstName(data.firstName);
-        if(data.lastName) setCurLastName(data.lastName);
-        if(data.email) setCurEmail(data.email);
     }
 
-//-------------------------- General Update Function --------------------------------
+    const token = localStorage.getItem("token");
 
-    async function updateUserField (
-        fieldName: string, 
+    useEffect(() => {
+        if (token) {
+            const decoded = jwtDecode<TokenPayload>(token);
+            setUserID(decoded.user_id);
+            getUser();
+        }
+    }, []);
+
+    //-------------------------- Get User -----------------------------------
+    async function getUser() {
+        const response = await getUserService(token);
+
+        const data = await response.json();
+        if (data.firstName) setCurFirstName(data.firstName);
+        if (data.lastName) setCurLastName(data.lastName);
+        if (data.email) setCurEmail(data.email);
+    }
+
+    //-------------------------- General Update Function --------------------------------
+
+    async function updateUserField(
+        fieldName: string,
         fieldValue: string,
         currentValueSetter: React.Dispatch<React.SetStateAction<string>>,
         editSetter: React.Dispatch<React.SetStateAction<boolean>>,
         editState: boolean
-    ){
-        if (editState && fieldValue) {
+    ) {
+        if (editState && fieldValue && userID) {
             try {
-            const response = await fetch(`http://localhost:8080/api/users/${userID}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ [fieldName]: fieldValue }),
-            });
-          
-            if (!response.ok) {
-                const data = await response.json();
-                setError(data.error);
-                throw new Error(`Error when updating ${fieldName}`);
-            
-            }  
-            console.log(`${fieldName} updated: `, response.status);
-            currentValueSetter(fieldValue);
+                const response = await updateUserFieldService(userID, fieldName, fieldValue);
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    setError(data.error);
+                    throw new Error(`Error when updating ${fieldName}`);
+
+                }
+                console.log(`${fieldName} updated: `, response.status);
+                currentValueSetter(fieldValue);
 
             } catch (err) {
                 console.error(err);
@@ -114,14 +110,15 @@ function AccountSettings (){
 
     //-------------------- Update Password Method --------------------
     async function switchPassword() {
-        if (editPassword && oldPassword && newPasswordFirst && newPasswordSecond) {
+        if (editPassword && oldPassword && newPasswordFirst && newPasswordSecond && userID) {
             try {
-            const response = await fetch(`http://localhost:8080/api/users/${userID}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ oldPassword, newPasswordFirst, newPasswordSecond }),
-            });
-          
+            const response = await updateUserPasswordService(
+                userID,
+                oldPassword,
+                newPasswordFirst,
+                newPasswordSecond
+            );
+    
             if (!response.ok) {
                 const data = await response.json();
                 setError(data.error);
@@ -130,7 +127,7 @@ function AccountSettings (){
             }  
             console.log("Password updated: ", response.status);
             alert("PASSWORD UPDATED!")
-
+    
             } catch (err) {
                 console.error(err);
                 return
@@ -140,104 +137,104 @@ function AccountSettings (){
         setEditPassword(!editPassword);
     }
 
-//------------------------ Update password form --------------------------------------- 
+    //------------------------ Update password form --------------------------------------- 
     function updatePasswordForm() {
         return (
             <div className="m-4">
                 <div className="flex flex-col space-y-3 my-4">
-                <Label htmlFor="name">Old password: </Label>
-                <Input 
-                    id="oldPassword"
-                    type="password"
-                    autoComplete="current-password"
-                    value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)} 
-                    placeholder="Old Password"/>
+                    <Label htmlFor="name">Old password: </Label>
+                    <Input
+                        id="oldPassword"
+                        type="password"
+                        autoComplete="current-password"
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                        placeholder="Old Password" />
                 </div>
                 <div className="flex flex-col space-y-3 my-4">
                     <Label htmlFor="name">New password </Label>
-                    <Input 
-                        id="newPasswordFirst" 
+                    <Input
+                        id="newPasswordFirst"
                         type="password"
                         autoComplete="new-password"
                         value={newPasswordFirst}
-                        onChange={(e) => setNewPasswordFirst(e.target.value)} 
-                        placeholder="New Password"/>
+                        onChange={(e) => setNewPasswordFirst(e.target.value)}
+                        placeholder="New Password" />
                 </div>
                 <div className="flex flex-col space-y-3 my-4">
-                <Label htmlFor="name">Confirm new password: </Label>
-                <Input 
-                    id="newPasswordSecond" 
-                    type="password"
-                    autoComplete="new-password"
-                    value={newPasswordSecond}
-                    onChange={(e) => setNewPasswordSecond(e.target.value)} 
-                    placeholder="New Password"/>
-                <Button type="button" onClick={switchPassword} className="float-right">{"Save Password"}</Button> 
+                    <Label htmlFor="name">Confirm new password: </Label>
+                    <Input
+                        id="newPasswordSecond"
+                        type="password"
+                        autoComplete="new-password"
+                        value={newPasswordSecond}
+                        onChange={(e) => setNewPasswordSecond(e.target.value)}
+                        placeholder="New Password" />
+                    <Button type="button" onClick={switchPassword} className="float-right">{"Save Password"}</Button>
                 </div>
             </div>
         )
-    }    
+    }
 
     return (
         <div className="w-xl">
-        <Card>
-            <CardHeader>
-                <CardTitle>Account Settings</CardTitle>
-                <CardDescription>Verify or update account settings</CardDescription>
-            </CardHeader>
-            <CardContent className="mx-5">
-            <form>
-                <div className="grid w-full items-center gap-4">
-                    <div className="flex flex-col space-y-1.5">
-                        <Label htmlFor="name">First Name:</Label>
-                        <div className="flex items-center space-x-2 space-y-1.5">
-                            {editFirstName ? <Input 
-                                id="firstName" 
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)} 
-                                placeholder="New first name"/> : <p>{curFirstName}</p>}
-                            {editFirstName ? <Button type="button" onClick={switchFirstName} className="float-right">Save</Button> : <img className="size-5.5"src="/images/editIcon.png" alt="edit icon" onClick={switchFirstName}/>}
-                        </div>
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                        <Label htmlFor="name">Last Name:</Label>
-                            <div className="flex items-center space-x-2 space-y-1.5">
-                            {editLastName ? <Input 
-                            id="lastName" 
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)} 
-                            placeholder="New last name"/> : <p>{curLastName}</p>}
-                            {editLastName ? <Button type="button" onClick={switchLastName} className="float-right">Save</Button> : <img className="size-5.5"src="/images/editIcon.png" alt="edit icon" onClick={switchLastName}/>}
-                            </div> 
-                    </div> 
-                    <div className="flex flex-col space-y-1.5">
-                        <Label htmlFor="name">Email: </Label>
-                            <div className="flex items-center space-x-2 space-y-1.5">
-                                {editEmail ? <Input 
-                                id="email" 
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)} 
-                                placeholder="New e-mail"/> : <p>{curEmail}</p>}
-                                {editEmail ? <Button type="button" onClick={switchEmail} className="float-right">Save</Button> : <img className="size-5.5"src="/images/editIcon.png" alt="edit icon" onClick={switchEmail}/>}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Account Settings</CardTitle>
+                    <CardDescription>Verify or update account settings</CardDescription>
+                </CardHeader>
+                <CardContent className="mx-5">
+                    <form>
+                        <div className="grid w-full items-center gap-4">
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="name">First Name:</Label>
+                                <div className="flex items-center space-x-2 space-y-1.5">
+                                    {editFirstName ? <Input
+                                        id="firstName"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        placeholder="New first name" /> : <p>{curFirstName}</p>}
+                                    {editFirstName ? <Button type="button" onClick={switchFirstName} className="float-right">Save</Button> : <img className="size-5.5" src="/images/editIcon.png" alt="edit icon" onClick={switchFirstName} />}
+                                </div>
                             </div>
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                        <Label htmlFor="name">Password: </Label>
-                        <div className="flex items-center space-x-2 space-y-1.5">
-                            {editPassword ? updatePasswordForm() : <Button type="button" onClick={switchPassword} className="float-right">{"Update Password"}</Button>}
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="name">Last Name:</Label>
+                                <div className="flex items-center space-x-2 space-y-1.5">
+                                    {editLastName ? <Input
+                                        id="lastName"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        placeholder="New last name" /> : <p>{curLastName}</p>}
+                                    {editLastName ? <Button type="button" onClick={switchLastName} className="float-right">Save</Button> : <img className="size-5.5" src="/images/editIcon.png" alt="edit icon" onClick={switchLastName} />}
+                                </div>
+                            </div>
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="name">Email: </Label>
+                                <div className="flex items-center space-x-2 space-y-1.5">
+                                    {editEmail ? <Input
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="New e-mail" /> : <p>{curEmail}</p>}
+                                    {editEmail ? <Button type="button" onClick={switchEmail} className="float-right">Save</Button> : <img className="size-5.5" src="/images/editIcon.png" alt="edit icon" onClick={switchEmail} />}
+                                </div>
+                            </div>
+                            <div className="flex flex-col space-y-1.5">
+                                <Label htmlFor="name">Password: </Label>
+                                <div className="flex items-center space-x-2 space-y-1.5">
+                                    {editPassword ? updatePasswordForm() : <Button type="button" onClick={switchPassword} className="float-right">{"Update Password"}</Button>}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </form>
-            </CardContent>
-            <CardFooter>
-                {error && <p className="text-red-500">{error}</p>}
-            </CardFooter>
-        </Card>
-        </div> 
+                    </form>
+                </CardContent>
+                <CardFooter>
+                    {error && <p className="text-red-500">{error}</p>}
+                </CardFooter>
+            </Card>
+        </div>
     )
 }
 
-export { AccountSettings }; 
+export { AccountSettings };
 
