@@ -1,3 +1,4 @@
+import { RegisterRequest } from "../types/user";
 
 const API_URL = "http://localhost:8080/api"
 
@@ -35,5 +36,14 @@ export const updateUserFieldService = (
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ oldPassword, newPasswordFirst, newPasswordSecond }),
+    });
+  };
+
+
+  export const registerUserService = async ( data: RegisterRequest) : Promise<Response> => {
+    return fetch(`${API_URL}/users`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify(data),
     });
   };
