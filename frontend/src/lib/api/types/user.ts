@@ -28,3 +28,8 @@ export interface UpdateUserPasswordRequest {
     newPasswordFirst: string;
     newPasswordSecond: string;
 }
+
+export interface LoginRequest {
+    email: string;
+    password: string;
+}

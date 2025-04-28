@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoginRequest } from "@/lib/api/types/user";
+import { loginUserService } from "@/lib/api/services/logins";
 
 export function LoginForm() {
   const navigate = useNavigate();
@@ -10,12 +12,8 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const loginUser = async (email: string, password: string) => {
-    const response = await fetch("http://localhost:8080/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+  const loginUser = async (data: LoginRequest) => {
+    const response = await loginUserService(data);
 
     if (!response.ok) throw new Error("Invalid credentials");
     return response.json();
@@ -26,7 +24,8 @@ export function LoginForm() {
     setError("");
 
     try {
-      const data = await loginUser(email, password);
+      const request: LoginRequest = {email, password};
+      const data = await loginUser(request);
       localStorage.setItem("token", data.token);
       navigate("/home");
     } catch {
