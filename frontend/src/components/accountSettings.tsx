@@ -1,7 +1,7 @@
-import { Button } from "./ui/button.tsx"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { jwtDecode } from "jwt-decode"
+import { Button } from "./ui/button.tsx";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 
 import {
@@ -11,41 +11,36 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import { getUserService, updateUserFieldService, updateUserPasswordService } from "@/lib/api/services/users.ts";
+import { UserProfile, UpdateUserFieldRequest, UpdateUserPasswordRequest, TokenPayload } from "@/lib/api/types/user";
 
 function AccountSettings() {
 
     //inputData ---------------------------
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [oldPassword, setOldPassword] = useState("");
-    const [newPasswordFirst, setNewPasswordFirst] = useState("");
-    const [newPasswordSecond, setNewPasswordSecond] = useState("");
-    const [error, setError] = useState("");
-
+    const [firstName, setFirstName] = useState<string>("");
+    const [lastName, setLastName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [oldPassword, setOldPassword] = useState<string>("");
+    const [newPasswordFirst, setNewPasswordFirst] = useState<string>("");
+    const [newPasswordSecond, setNewPasswordSecond] = useState<string>("");
+    const [error, setError] = useState<string>("");
 
     //edit states ---------------------------
-    const [editFirstName, setEditFirstName] = useState(false);
-    const [editLastName, setEditLastName] = useState(false);
-    const [editEmail, setEditEmail] = useState(false);
-    const [editPassword, setEditPassword] = useState(false);
+    const [editFirstName, setEditFirstName] = useState<boolean>(false);
+    const [editLastName, setEditLastName] = useState<boolean>(false);
+    const [editEmail, setEditEmail] = useState<boolean>(false);
+    const [editPassword, setEditPassword] = useState<boolean>(false);
 
     //stored data ---------------------------
-    const [curFirstName, setCurFirstName] = useState("No data");
-    const [curLastName, setCurLastName] = useState("No data");
-    const [curEmail, setCurEmail] = useState("No data");
+    const [curFirstName, setCurFirstName] = useState<string>("No data");
+    const [curLastName, setCurLastName] = useState<string>("No data");
+    const [curEmail, setCurEmail] = useState<string>("No data");
     const [userID, setUserID] = useState<string | null>(null);
 
     //
 
-    //----------------------------- Get User Token info ---------------------------------------------
-
-    interface TokenPayload {
-        user_id: string;
-        exp: number;
-    }
+    //----------------------------- Get User Token info --------------------------------------------- 
 
     const token = localStorage.getItem("token");
 
@@ -61,7 +56,7 @@ function AccountSettings() {
     async function getUser() {
         const response = await getUserService(token);
 
-        const data = await response.json();
+        const data: UserProfile = await response.json();
         if (data.firstName) setCurFirstName(data.firstName);
         if (data.lastName) setCurLastName(data.lastName);
         if (data.email) setCurEmail(data.email);
@@ -78,17 +73,21 @@ function AccountSettings() {
     ) {
         if (editState && fieldValue && userID) {
             try {
-                const response = await updateUserFieldService(userID, fieldName, fieldValue);
+                const updateData: UpdateUserFieldRequest = {
+                    userId: userID,
+                    fieldName: fieldName,
+                    fieldValue: fieldValue,
+                };
+
+                const response = await updateUserFieldService(updateData);
 
                 if (!response.ok) {
                     const data = await response.json();
                     setError(data.error);
                     throw new Error(`Error when updating ${fieldName}`);
-
                 }
-                console.log(`${fieldName} updated: `, response.status);
-                currentValueSetter(fieldValue);
 
+                currentValueSetter(fieldValue);
             } catch (err) {
                 console.error(err);
             }
@@ -101,9 +100,11 @@ function AccountSettings() {
     async function switchFirstName() {
         await updateUserField("firstName", firstName, setCurFirstName, setEditFirstName, editFirstName);
     }
+
     async function switchLastName() {
         await updateUserField("lastName", lastName, setCurLastName, setEditLastName, editLastName);
     }
+
     async function switchEmail() {
         await updateUserField("email", email, setCurEmail, setEditEmail, editEmail);
     }
@@ -112,25 +113,25 @@ function AccountSettings() {
     async function switchPassword() {
         if (editPassword && oldPassword && newPasswordFirst && newPasswordSecond && userID) {
             try {
-            const response = await updateUserPasswordService(
-                userID,
-                oldPassword,
-                newPasswordFirst,
-                newPasswordSecond
-            );
-    
-            if (!response.ok) {
-                const data = await response.json();
-                setError(data.error);
-                throw new Error("Error when updating password");
-            
-            }  
-            console.log("Password updated: ", response.status);
-            alert("PASSWORD UPDATED!")
-    
+                const updatePasswordData: UpdateUserPasswordRequest = {
+                    userId: userID,
+                    oldPassword: oldPassword,
+                    newPasswordFirst: newPasswordFirst,
+                    newPasswordSecond: newPasswordSecond,
+                };
+
+                const response = await updateUserPasswordService(updatePasswordData);
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    setError(data.error);
+                    throw new Error("Error when updating password");
+                }
+
+                alert("PASSWORD UPDATED!");
             } catch (err) {
                 console.error(err);
-                return
+                return;
             }
         }
         setError("");
@@ -173,7 +174,7 @@ function AccountSettings() {
                     <Button type="button" onClick={switchPassword} className="float-right">{"Save Password"}</Button>
                 </div>
             </div>
-        )
+        );
     }
 
     return (
@@ -233,8 +234,7 @@ function AccountSettings() {
                 </CardFooter>
             </Card>
         </div>
-    )
+    );
 }
 
 export { AccountSettings };
-
