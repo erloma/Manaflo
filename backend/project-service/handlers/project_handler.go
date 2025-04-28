@@ -25,6 +25,11 @@ func (h *ProjectHandler) CreateProject(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid fields in project entered"})
 	}
 
+	validTypes := map[string]bool{"Work project": true, "School project": true, "Personal project": true, "Other": true}
+	if !validTypes[project.Type] {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid project type"})
+	}
+
 	// TODO check if project.CreatedBy maps to real user
 
 	if err := h.service.CreateProject(project); err != nil {
@@ -51,7 +56,7 @@ func getUserProjects(c *fiber.Ctx, userID int) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Database connection failed"})
 	}
 
-	// Implement this shit 
+	// Implement this shit
 }
 
 func getProjectByID(){

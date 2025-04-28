@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 export function CardWithForm() {
   const [name, setName] = useState<string>("");
   const [type, setType] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
 
@@ -36,13 +37,14 @@ export function CardWithForm() {
 
     const payload = {
       name,
-      description: type,
+      description,
+      type,
       created_by: 1, // TODO change this to real user id
       attachments: [],
     };
 
     try {
-      const res = await fetch("/api/projects", {
+      const res = await fetch("http://localhost:8082/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -56,6 +58,7 @@ export function CardWithForm() {
 
       setSuccess(`Created project “${body.name}” (ID ${body.ID})`);
       setName("");
+      setDescription("");
       setType("");
     } catch {
       setError("Network error");
@@ -97,6 +100,16 @@ export function CardWithForm() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="description">Description</Label>
+              <textarea
+                id="description"
+                placeholder="Enter project description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full rounded border p-2"
+              />
+            </div>
 
             {error && <p className="text-red-500">{error}</p>}
             {success && <p className="text-green-500">{success}</p>}
@@ -105,7 +118,18 @@ export function CardWithForm() {
       </CardContent>
 
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setName("");
+            setType("");
+            setDescription("");
+            setError("");
+            setSuccess("");
+          }}
+        >
+          Cancel
+        </Button>
         <Button type="submit" form="project-form">
           Create
         </Button>
