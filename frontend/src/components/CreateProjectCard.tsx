@@ -58,6 +58,7 @@ export function CardWithForm() {
 
       setSuccess(`Created project “${body.name}” (ID ${body.ID})`);
       setName("");
+      setDescription("");
       setType("");
     } catch {
       setError("Network error");
@@ -117,7 +118,18 @@ export function CardWithForm() {
       </CardContent>
 
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setName("");
+            setType("");
+            setDescription("");
+            setError("");
+            setSuccess("");
+          }}
+        >
+          Cancel
+        </Button>
         <Button type="submit" form="project-form">
           Create
         </Button>
