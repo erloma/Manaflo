@@ -1,7 +1,8 @@
-import { useState, FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
 import { Card } from "./ui/card";
 import {
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -20,7 +21,6 @@ import { Button } from "@/components/ui/button";
 export function CardWithForm() {
   const [name, setName] = useState<string>("");
   const [type, setType] = useState<string>("");
-  const [desc, setDescription] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
 
@@ -36,7 +36,7 @@ export function CardWithForm() {
 
     const payload = {
       name,
-      description: desc,
+      description: type,
       created_by: 1, // TODO change this to real user id
       attachments: [],
     };
@@ -57,7 +57,6 @@ export function CardWithForm() {
       setSuccess(`Created project “${body.name}” (ID ${body.ID})`);
       setName("");
       setType("");
-      setDescription(""); 
     } catch {
       setError("Network error");
     }
@@ -67,6 +66,7 @@ export function CardWithForm() {
     <Card className="w-[350px]">
       <CardHeader>
         <CardTitle>Create project</CardTitle>
+        <CardDescription>Create a new project in 3 clicks.</CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -81,30 +81,21 @@ export function CardWithForm() {
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="type">Type</Label>
+              <Label htmlFor="framework">Type</Label>
               <Select onValueChange={setType} value={type}>
-                <SelectTrigger id="type">
+                <SelectTrigger id="framework">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  <SelectItem value="school">School project</SelectItem>
-                  <SelectItem value="personal">Personal project</SelectItem>
-                  <SelectItem value="work">Work project</SelectItem>
+                  <SelectItem value="School project">School project</SelectItem>
+                  <SelectItem value="Personal project">
+                    Personal project
+                  </SelectItem>
+                  <SelectItem value="Work project">Work project</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="description">Description</Label>
-              <Input
-                id="description"
-                placeholder="Describe your project"
-                value={desc}
-                onChange={(e) => setDescription(e.target.value)}
-                className="h-24 resize-none" 
-              />
             </div>
 
             {error && <p className="text-red-500">{error}</p>}
