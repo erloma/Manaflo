@@ -3,7 +3,7 @@ import HomePage from "./pages/HomePage";
 import FirstPage from "./pages/FirstPage"
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
-import { AccountSettings } from "./components/accountSettings";
+import { AccountSettings } from "./components/AccountSettings.tsx";
 
 function App() {
   return (
