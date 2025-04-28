@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 export function CardWithForm() {
   const [name, setName] = useState<string>("");
   const [type, setType] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
 
@@ -36,7 +37,8 @@ export function CardWithForm() {
 
     const payload = {
       name,
-      description: type,
+      description,
+      type,
       created_by: 1, // TODO change this to real user id
       attachments: [],
     };
@@ -96,6 +98,16 @@ export function CardWithForm() {
                   <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="description">Description</Label>
+              <textarea
+                id="description"
+                placeholder="Enter project description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full rounded border p-2"
+              />
             </div>
 
             {error && <p className="text-red-500">{error}</p>}
