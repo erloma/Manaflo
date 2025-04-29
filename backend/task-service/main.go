@@ -46,7 +46,7 @@ func main() {
     routes.SetupRoutes(app, taskHandler)
 
 
-	port := ":8081"
+	port := ":8080"
 
     // Start server
     log.Fatal(app.Listen(port))
