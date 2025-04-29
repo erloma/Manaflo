@@ -48,6 +48,18 @@ func (h *ProjectHandler) GetProjects(c *fiber.Ctx) error {
 
 }
 
+func (h *ProjectHandler) GetProjectUsers(c *fiber.Ctx) error {
+	projectID := c.Params("project_id")
+	if projectID == "" {
+		return c.Status(400).JSON(fiber.Map{"error": "ID is missing in request"})
+	}
+	users, err := h.service.GetProjectUsers(projectID)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Unable to fetch users of project"})
+	}
+	return c.Status(200).JSON(users) 
+}
+
 // recieve body send to service and ensure correct json reponse
 /*
 func getUserProjects(c *fiber.Ctx, userID int) error {

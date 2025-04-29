@@ -8,6 +8,11 @@ import (
 
 type ProjectService struct {}
 
+type UserInfo struct {
+	id uint
+	FirstName string
+	LastName string
+}
 func NewProjectService() *ProjectService {
 	return &ProjectService{}
 }
@@ -34,4 +39,7 @@ func (s *ProjectService) GetAllProjects() ([]models.Project, error) {
 
 func (s *ProjectService) GetProjectByID(id uint) (*models.Project, error) {
 	return repositories.GetProjectByID(id)
+}
+func (s *ProjectService) GetProjectUsers(id uint) ([]UserInfo, error) {
+	
 }

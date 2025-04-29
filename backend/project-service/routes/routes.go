@@ -13,5 +13,5 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("/api/projects", h.CreateProject)
 	app.Get("/api/projects", h.GetProjects)
 	api := app.Group("/api", middleware.AuthRequired())
-	api.Get("/projects/users", h.GetProjectUsers)
+	api.Get("/projects/:project_id/users", h.GetProjectUsers)
 }
