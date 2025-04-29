@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DatePicker } from "./DatePicker"
+import { Task } from '@/lib/api/types/task';
 
 import { Button } from "@/components/ui/button"
 import {
@@ -19,21 +20,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { createTask } from '@/lib/api/services/tasks';
 
 // TODO: pass project id as prop
 // TODO: Give feedback that task has been created successfully/unsuccessfully
 // TODO: Add validation for title/description fields
 // TODO: On submit, re-route to task page (like re-routing to a newly created issue in git for example)
 
-interface Task {
-  project: number,
-  title: string,
-  description: string,
-  deadline: string,
-  priority: string,
-  created_by: number,
-  assigned_to: number
-}
+
 
 
 export function CreateTaskForm() {
@@ -77,16 +71,9 @@ export function CreateTaskForm() {
       assigned_to: createdBy
     };
 
-    const response = await fetch("http://localhost:8081/api/tasks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
+    const response = await createTask(payload); 
     if (!response.ok) throw new Error("Error creating task");
     return response.json();
-
-
 
   }
 
