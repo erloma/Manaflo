@@ -106,7 +106,7 @@ func (h *UserHandler) GetUsersByIds(c *fiber.Ctx) error {
 	if len(request.UserIDs) == 0 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "user_ids cannot be empty"})
 	}
-	users, err := h.userService.GetUsersByIds(request.UserIDs)
+	users, err := h.userService.GetUsersByIDs(request.UserIDs)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
