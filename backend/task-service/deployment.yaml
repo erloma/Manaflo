@@ -16,6 +16,13 @@ spec:
         - name: task-service
           image: task-service:latest
           imagePullPolicy: IfNotPresent
+          resources:
+              requests:
+                cpu: "100m"       
+                memory: "64Mi"     
+              limits:
+                cpu: "500m"        
+                memory: "128Mi"
           ports:
             - containerPort: 8080
           envFrom:
@@ -34,5 +41,3 @@ data:
   DB_NAME: dXNlcnM=
   DB_PORT: NTQzMg==
   JWT_SECRET_KEY: bXlzZWNyZXRrZXk=
-
-  # Use  kubectl port-forward svc/task-service 8080:8080  to port forward requests
