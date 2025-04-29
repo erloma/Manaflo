@@ -33,3 +33,10 @@ export interface LoginRequest {
     email: string;
     password: string;
 }
+
+export interface UserInfo {
+    userId: string;
+    firstName: string;
+    lastName: string;
+
+}

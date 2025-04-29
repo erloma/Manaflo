@@ -1,10 +1,22 @@
 import { CreateProjectRequest } from "../types/project";
 const API_URL = "http://localhost:8082/api"
 
-export const createProjectService = (data: CreateProjectRequest) : Promise<Response> => {
+export const createProjectService = (data: CreateProjectRequest): Promise<Response> => {
     return fetch(`${API_URL}/projects`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      });
+    });
 };
+
+export const getUsersInProjectService = (project_id: string, token: string | null): Promise<Response> => {
+    return fetch(`${API_URL}/projects/${project_id}/users`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+
+        },
+
+    });
+}
