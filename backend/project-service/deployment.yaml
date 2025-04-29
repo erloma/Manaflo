@@ -16,6 +16,13 @@ spec:
         - name: project-service
           image: project-service:latest
           imagePullPolicy: IfNotPresent
+          resources:
+              requests:
+                cpu: "100m"       
+                memory: "64Mi"     
+              limits:
+                cpu: "500m"        
+                memory: "128Mi"
           ports:
             - containerPort: 8080
           envFrom:
@@ -35,4 +42,3 @@ data:
   DB_PORT: NTQzMg==
   JWT_SECRET_KEY: bXlzZWNyZXRrZXk=
 
-  # Use  kubectl port-forward svc/user-service 8080:8080  to port forward requests
