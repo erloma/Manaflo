@@ -4,8 +4,9 @@ metadata:
   name: backend-ingress
   namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: ""
 spec:
+  ingressClassName: nginx
   rules:
     - host: localhost
       http:
@@ -31,3 +32,6 @@ spec:
                 name: task-service
                 port:
                   number: 8080
+
+# Use:  kubectl port-forward svc/ingress-nginx-controller -n ingress-nginx 8080:80
+# to forward requests to the ingress when calling enpoints using Postman locally, for example
