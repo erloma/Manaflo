@@ -25,5 +25,11 @@ type UserUpdateRequest struct {
 }
 
 type UserIDsRequest struct {
-	UserIDs []uint `json: "user_ids"`
+	UserIDs []uint `json:"user_ids"`
+}
+
+type UserInfo struct {
+	ID        uint   `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
