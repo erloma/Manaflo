@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DatePicker } from "./DatePicker"
 import { Task } from '@/lib/api/types/task';
 
@@ -21,13 +21,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { createTask } from '@/lib/api/services/tasks';
-
-// TODO: pass project id as prop
-// TODO: Give feedback that task has been created successfully/unsuccessfully
-// TODO: Add validation for title/description fields
-// TODO: On submit, re-route to task page (like re-routing to a newly created issue in git for example)
-
-
+import { getUsersInProjectService } from '@/lib/api/services/projects';
+import { UserInfo } from 'os';
 
 
 export function CreateTaskForm() {
@@ -37,8 +32,27 @@ export function CreateTaskForm() {
   const [priority, setPriority] = useState("");
   const [date, setDate] = useState<Date>(new Date);
   const [createdLabel, setCreatedLabel] = useState(false);
+  const [members, setMembers] = useState<UserInfo[]>([]);
 
   const token = localStorage.getItem("token");
+
+
+  const projectId = 42069;
+
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await getUsersInProjectService(String(projectId), token);
+        const data = await res.json();
+        setMembers(data);
+      } catch (err) {
+        console.error("Error fetching project users", err);
+      }
+    };
+
+    fetchUsers();
+  }, [projectId, token]);
 
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +80,6 @@ export function CreateTaskForm() {
     }, 3000);
   }
 
-  const projectId = 42069;
   const createdBy = 69420;
 
   const handleSubmit = async (e: React.FormEvent) => {
