@@ -97,3 +97,20 @@ func (h *UserHandler) GetUserProfile(c *fiber.Ctx) error {
 	}
 	return c.JSON(user)
 }
+func (h *UserHandler) GetUsersByIds(c *fiber.Ctx) error {
+	var request models.UserIDsRequest
+	if err := c.BodyParser(&request); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Cannot parse JSON"})
+	}
+
+	if len(request.UserIDs) == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "user_ids cannot be empty"})
+	}
+	users, err := h.userService.GetUsersByIds(request.UserIDs)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(users)
+
+}

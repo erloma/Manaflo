@@ -122,3 +122,5 @@ func (s *UserService) GetUserByID(id string) (models.User, error) {
 	}
 	return user, nil
 }
+
+func (s *UserService) GetUsersByIDs(users uint)3
