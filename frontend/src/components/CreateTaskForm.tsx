@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DatePicker } from "./DatePicker"
 import { Task } from '@/lib/api/types/task';
 
@@ -21,21 +21,36 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { createTask } from '@/lib/api/services/tasks';
-
-// TODO: pass project id as prop
-// TODO: Give feedback that task has been created successfully/unsuccessfully
-// TODO: Add validation for title/description fields
-// TODO: On submit, re-route to task page (like re-routing to a newly created issue in git for example)
+import { getUsersInProjectService } from '@/lib/api/services/projects';
+import { UserInfo } from '@/lib/api/types/user';
 
 
-
-
-export function CreateTaskForm() {
+export function CreateTaskForm({ projectId }: { projectId: number }) {
 
   const [title, setTitle] = useState("");
   const [description, setDesc] = useState("");
   const [priority, setPriority] = useState("");
   const [date, setDate] = useState<Date>(new Date);
+  const [createdLabel, setCreatedLabel] = useState(false);
+  const [members, setMembers] = useState<UserInfo[]>([]);
+  const [assignee, setAssignee] = useState<string | undefined>();
+
+  const token = localStorage.getItem("token");
+
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const users = await getUsersInProjectService(String(projectId), token);
+        setMembers(users);
+      } catch (err) {
+        console.error("Error fetching project users", err);
+      }
+    };
+
+    fetchUsers();
+  }, [projectId, token]);
+
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const processedTitle = event.target.value.trim(); // removes leading/trailing spaces
@@ -55,7 +70,13 @@ export function CreateTaskForm() {
     setDate(selectedDate);
   }
 
-  const projectId = 42069;
+  const handleCreatedLabel = () => {
+    setCreatedLabel(true);
+    setTimeout(() => {
+      setCreatedLabel(false);
+    }, 3000);
+  }
+
   const createdBy = 69420;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,11 +89,15 @@ export function CreateTaskForm() {
       deadline: date.toISOString(),
       priority,
       created_by: createdBy,
-      assigned_to: createdBy
+      assigned_to: assignee ? Number(assignee) : createdBy
     };
 
-    const response = await createTask(payload); 
+    const response = await createTask(payload, token);
     if (!response.ok) throw new Error("Error creating task");
+    handleCreatedLabel();
+    setPriority("");
+    setDesc("");
+    setTitle("");
     return response.json();
 
   }
@@ -119,18 +144,27 @@ export function CreateTaskForm() {
                 </SelectContent>
               </Select>
               <Label htmlFor="assignee">Assignee</Label>
-              <Select>
+              <Select value={assignee} onValueChange={setAssignee}>
                 <SelectTrigger id="assignee">
                   <SelectValue placeholder="Unassigned" />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  {/* TODO: dynamically load project members */}
+                  {members.map((member) => (
+                    <SelectItem key={member.userId} value={String(member.userId)}>
+                      {member.firstName} {member.lastName}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
+
             </div>
           </div>
+
           <CardFooter className="flex justify-between pt-4">
             <Button variant="outline">Cancel</Button>
+            {createdLabel && (<Label className="text-green-400">
+              Task created successfully!
+            </Label>)}
             <Button type="submit">Create task</Button>
           </CardFooter>
         </form>

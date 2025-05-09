@@ -40,3 +40,18 @@ func GetProjectByID(id uint) (*models.Project, error) {
 	}
 	return &project, nil
 }
+
+func GetProjectMembers(id uint) ([]models.ProjectMember, error) {
+	db, err := config.GetDB()
+	if err != nil {
+		return nil, err
+	}
+	var projectMembers []models.ProjectMember
+
+	err = db.Where("project_id = ?", id).Find(&projectMembers).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return projectMembers, err
+}

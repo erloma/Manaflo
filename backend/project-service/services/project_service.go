@@ -2,11 +2,14 @@ package services
 
 import (
 	"errors"
+	"github.com/erloma/manaflo/backend/project-service/external"
 	"github.com/erloma/manaflo/backend/project-service/models"
 	"github.com/erloma/manaflo/backend/project-service/repositories"
 )
 
-type ProjectService struct {}
+type ProjectService struct{}
+
+type ProjectMember struct{}
 
 func NewProjectService() *ProjectService {
 	return &ProjectService{}
@@ -34,4 +37,26 @@ func (s *ProjectService) GetAllProjects() ([]models.Project, error) {
 
 func (s *ProjectService) GetProjectByID(id uint) (*models.Project, error) {
 	return repositories.GetProjectByID(id)
+}
+
+func (s *ProjectService) GetProjectUsers(id uint) ([]external.UserInfo, error) {
+	projectMembers, err := repositories.GetProjectMembers(id)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []uint
+	for _, member := range projectMembers {
+		users = append(users, member.User)
+	}
+
+	var members []external.UserInfo
+
+	members, err = external.GetUserInfosByIDs(users)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return members, nil
 }

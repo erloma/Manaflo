@@ -42,7 +42,7 @@ func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 
 func (h *UserHandler) UpdateUser(c *fiber.Ctx) error {
 	userID := c.Params("id")
-	if (userID == "") {
+	if userID == "" {
 		return c.Status(400).JSON(fiber.Map{"error": "ID is missing in request"})
 	}
 	var updateRequest models.UserUpdateRequest
@@ -50,7 +50,7 @@ func (h *UserHandler) UpdateUser(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "Cannot parse JSON"})
 	}
 	_, err := h.userService.UpdateUser(userID, updateRequest)
-	if (err != nil) {
+	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
 	return c.Status(200).JSON(fiber.Map{"message": "User successfully updated"})
@@ -96,4 +96,22 @@ func (h *UserHandler) GetUserProfile(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "User not found"})
 	}
 	return c.JSON(user)
+}
+
+func (h *UserHandler) GetUsersByIds(c *fiber.Ctx) error {
+	var request models.UserIDsRequest
+	if err := c.BodyParser(&request); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Cannot parse JSON"})
+	}
+
+	if len(request.UserIDs) == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "user_ids cannot be empty"})
+	}
+	users, err := h.userService.GetUsersByIDs(request.UserIDs)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(users)
+
 }

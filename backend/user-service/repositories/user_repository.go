@@ -74,3 +74,16 @@ func GetAllUsers() ([]models.User, error) {
 	}
 	return users, nil
 }
+
+func GetUsersByIDs(ids []uint) ([]models.User, error) {
+	db, err := config.GetDB()
+	if err != nil {
+		return nil, err
+	}
+
+	var users []models.User
+	if err := db.Where("id IN ?", ids).Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
+}

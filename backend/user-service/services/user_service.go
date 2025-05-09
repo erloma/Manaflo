@@ -13,16 +13,15 @@ func NewUserService() *UserService {
 	return &UserService{}
 }
 
-
 func (s *UserService) GetUsers() ([]models.User, error) {
 	return repositories.GetAllUsers()
 }
 
 func (s *UserService) UpdateUser(userID string, update models.UserUpdateRequest) (models.User, error) {
-	
+
 	user, err := repositories.GetUserByID(userID) //check if user exists
-	
-	updated := false; 
+
+	updated := false
 
 	if err != nil { //if error we exit with the error
 		return models.User{}, err
@@ -32,30 +31,30 @@ func (s *UserService) UpdateUser(userID string, update models.UserUpdateRequest)
 		if !utils.CheckValidEmail(*update.Email) {
 			return models.User{}, errors.New("email is of invalid format")
 		}
-		user.Email = *update.Email; 
-		updated = true;
+		user.Email = *update.Email
+		updated = true
 	}
 
 	if update.FirstName != nil {
-		user.FirstName = *update.FirstName;
-		updated = true; 
+		user.FirstName = *update.FirstName
+		updated = true
 	}
 
 	if update.LastName != nil {
-		user.LastName = *update.LastName;
-		updated = true; 
+		user.LastName = *update.LastName
+		updated = true
 	}
-	
-	if (update.NewPasswordFirst != nil || update.OldPassword!= nil || update.NewPasswordSecond != nil) {
+
+	if update.NewPasswordFirst != nil || update.OldPassword != nil || update.NewPasswordSecond != nil {
 		if update.OldPassword == nil {
 			return models.User{}, errors.New("old password not provided")
-		} 
+		}
 		if update.NewPasswordFirst == nil {
 			return models.User{}, errors.New("new password not provided")
-		} 
+		}
 		if update.NewPasswordSecond == nil {
 			return models.User{}, errors.New("new password validation not provided")
-		} 
+		}
 		if *update.NewPasswordFirst != *update.NewPasswordSecond {
 			return models.User{}, errors.New("new password does not match")
 		}
@@ -69,12 +68,12 @@ func (s *UserService) UpdateUser(userID string, update models.UserUpdateRequest)
 			return models.User{}, errors.New("password must contain a special character and be at least 8 characters")
 		}
 		hashedPassword, err := utils.HashPassword(*update.NewPasswordFirst)
-		
+
 		if err != nil {
 			return models.User{}, err
 		}
 		user.Password = hashedPassword
-		updated = true;
+		updated = true
 	}
 	if updated {
 		return repositories.UpdateUser(user)
@@ -121,4 +120,21 @@ func (s *UserService) GetUserByID(id string) (models.User, error) {
 		return models.User{}, err
 	}
 	return user, nil
+}
+func (s *UserService) GetUsersByIDs(userIDs []uint) ([]models.UserInfo, error) {
+	users, err := repositories.GetUsersByIDs(userIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	var userInfos []models.UserInfo
+	for _, user := range users {
+		userInfos = append(userInfos, models.UserInfo{
+			ID:        user.ID,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+		})
+	}
+
+	return userInfos, nil
 }
