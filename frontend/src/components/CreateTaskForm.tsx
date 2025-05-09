@@ -33,6 +33,7 @@ export function CreateTaskForm() {
   const [date, setDate] = useState<Date>(new Date);
   const [createdLabel, setCreatedLabel] = useState(false);
   const [members, setMembers] = useState<UserInfo[]>([]);
+  const [assignee, setAssignee] = useState<string | undefined>();
 
   const token = localStorage.getItem("token");
 
@@ -91,7 +92,7 @@ export function CreateTaskForm() {
       deadline: date.toISOString(),
       priority,
       created_by: createdBy,
-      assigned_to: createdBy
+      assigned_to: assignee ?? createdBy
     };
 
     const response = await createTask(payload, token);
@@ -151,7 +152,11 @@ export function CreateTaskForm() {
                   <SelectValue placeholder="Unassigned" />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  {/* TODO: dynamically load project members */}
+                  {members.map((member) => (
+                    <SelectItem key={member.userId} value={member.userId}>
+                      {member.firstName} {member.lastName}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
