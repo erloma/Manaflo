@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select"
 import { createTask } from '@/lib/api/services/tasks';
 import { getUsersInProjectService } from '@/lib/api/services/projects';
-import { UserInfo } from 'os';
+import { UserInfo } from '@/lib/api/types/user';
 
 
 export function CreateTaskForm() {
@@ -43,9 +43,8 @@ export function CreateTaskForm() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await getUsersInProjectService(String(projectId), token);
-        const data = await res.json();
-        setMembers(data);
+        const users = await getUsersInProjectService(String(projectId), token);
+        setMembers(users);
       } catch (err) {
         console.error("Error fetching project users", err);
       }
