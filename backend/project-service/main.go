@@ -39,7 +39,7 @@ func main() {
     // Setup routes
     routes.SetupRoutes(app)
 
-	port := ":8082"
+	port := ":8080"
 
     // Start server
     log.Fatal(app.Listen(port))

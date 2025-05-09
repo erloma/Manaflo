@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: task-service
+  template:
+    metadata:
+      labels:
+        app: task-service
+    spec:
+      containers:
+        - name: task-service
+          image: task-service:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+              requests:
+                cpu: "100m"       
+                memory: "64Mi"     
+              limits:
+                cpu: "500m"        
+                memory: "128Mi"
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: task-service-env
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: task-service-env
+type: Opaque
+data:
+  DB_HOST: dGFzay1zZXJ2aWNlLXBvc3RncmVz
+  DB_USER: cm9vdA==
+  DB_PASSWORD: cGFzc3dvcmQ=
+  DB_NAME: dXNlcnM=
+  DB_PORT: NTQzMg==
+  JWT_SECRET_KEY: bXlzZWNyZXRrZXk=

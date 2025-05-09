@@ -1,0 +1,35 @@
+services:
+  user-service:
+    build:
+      context: .
+    image: user-service:latest
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - user-service-postgres
+    restart: always
+    networks:
+      - manaflo-network
+  
+  user-service-postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "user_service"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+    networks:
+      - manaflo-network
+
+networks:
+  manaflo-network:
+    driver: bridge
