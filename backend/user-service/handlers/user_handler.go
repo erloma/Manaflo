@@ -97,6 +97,7 @@ func (h *UserHandler) GetUserProfile(c *fiber.Ctx) error {
 	}
 	return c.JSON(user)
 }
+
 func (h *UserHandler) GetUsersByIds(c *fiber.Ctx) error {
 	var request models.UserIDsRequest
 	if err := c.BodyParser(&request); err != nil {
