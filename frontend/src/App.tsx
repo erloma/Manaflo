@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import FirstPage from "./pages/FirstPage"
 import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
+import ProjectPage from "./pages/ProjectPage.tsx";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="first" element={<FirstPage />} />
       <Route path="login" element={<LoginPage />} />
       <Route path="register" element={<RegisterPage />} />
+      <Route path="project-page" element={<ProjectPage/>} />
     </Routes>
   </BrowserRouter>
   );

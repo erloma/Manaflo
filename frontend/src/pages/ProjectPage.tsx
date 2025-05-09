@@ -1,7 +1,12 @@
+import TaskTable from "@/components/TaskTable"
 export default function ProjectPage() {
 
+
     return (
-        <h1>Project page </h1>
+        <div>
+            <h1>Project page </h1>
+            <TaskTable />
+        </div>
     )
 
 
