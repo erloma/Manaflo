@@ -89,7 +89,6 @@ export function CreateTaskForm({ projectId }: { projectId: number }) {
       deadline: date.toISOString(),
       priority,
       created_by: createdBy,
-      assigned_to: assignee ?? createdBy
       assigned_to: assignee ? Number(assignee) : createdBy
     };
 
