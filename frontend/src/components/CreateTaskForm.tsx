@@ -25,7 +25,7 @@ import { getUsersInProjectService } from '@/lib/api/services/projects';
 import { UserInfo } from '@/lib/api/types/user';
 
 
-export function CreateTaskForm() {
+export function CreateTaskForm({ projectId }: { projectId: number } ) {
 
   const [title, setTitle] = useState("");
   const [description, setDesc] = useState("");
