@@ -25,7 +25,7 @@ import { getUsersInProjectService } from '@/lib/api/services/projects';
 import { UserInfo } from '@/lib/api/types/user';
 
 
-export function CreateTaskForm({ projectId }: { projectId: number } ) {
+export function CreateTaskForm({ projectId }: { projectId: number }) {
 
   const [title, setTitle] = useState("");
   const [description, setDesc] = useState("");
@@ -36,9 +36,6 @@ export function CreateTaskForm({ projectId }: { projectId: number } ) {
   const [assignee, setAssignee] = useState<string | undefined>();
 
   const token = localStorage.getItem("token");
-
-
-  const projectId = 42069;
 
 
   useEffect(() => {
@@ -93,6 +90,7 @@ export function CreateTaskForm({ projectId }: { projectId: number } ) {
       priority,
       created_by: createdBy,
       assigned_to: assignee ?? createdBy
+      assigned_to: assignee ? Number(assignee) : createdBy
     };
 
     const response = await createTask(payload, token);
@@ -147,13 +145,13 @@ export function CreateTaskForm({ projectId }: { projectId: number } ) {
                 </SelectContent>
               </Select>
               <Label htmlFor="assignee">Assignee</Label>
-              <Select>
+              <Select value={assignee} onValueChange={setAssignee}>
                 <SelectTrigger id="assignee">
                   <SelectValue placeholder="Unassigned" />
                 </SelectTrigger>
                 <SelectContent position="popper">
                   {members.map((member) => (
-                    <SelectItem key={member.userId} value={member.userId}>
+                    <SelectItem key={member.userId} value={String(member.userId)}>
                       {member.firstName} {member.lastName}
                     </SelectItem>
                   ))}
