@@ -16,5 +16,5 @@ spec:
             port:
               number: 5173
 
-# Use:  kubectl port-forward service/frontend 5173:80
+# Use:  kubectl port-forward service/frontend-service 5173:80
 # to port forward the frontend service to call endpoints from the browser
